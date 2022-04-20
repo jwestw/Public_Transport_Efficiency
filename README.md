@@ -50,7 +50,9 @@ If you do not already have python installed, you can use the following link [Pyt
 ### Extensions
 Download the Python extension in the extensions button in the side bar. 
 
-![How to download Python extension video](/Users/chloemurrell/Desktop/Download Python extension.mov)
+![How to download Python extension video](https://user-images.githubusercontent.com/97117990/164270232-fdb693fa-e2fc-419a-b1dd-1514c9f438ad.mov)
+
+
 
 ### Set up your environment
 Select Python interpreter by clicking on the status bar
