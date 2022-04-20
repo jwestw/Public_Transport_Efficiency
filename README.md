@@ -30,3 +30,28 @@ The aims of the project are:
 3.	Calculate a ratio between public and private transport journey times 
 4.	Calculate an overall metric for the entire city
 5.	Compare the results for each city
+
+## For Developers
+
+### Setting up and Using VS Code 
+
+### Downloading VS Code
+
+You can download VS code from internet [VS code download link](https://code.visualstudio.com/download)
+
+### Ensure Python is installed on system
+If you are unsure if you have python installed, you can find out within the terminal using the following code. 
+```python 
+Python --version
+```
+It will return the version of python if installed. 
+If you do not already have python installed, you can use the following link [Python download](https://www.python.org/downloads/)
+
+### Extensions
+Download the Python extension in the extensions button in the side bar. 
+
+![How to download Python extension video](/Users/chloemurrell/Desktop/Download Python extension.mov)
+
+### Set up your environment
+Select Python interpreter by clicking on the status bar
+Configure the debugger – click on run and debug in the side bar
