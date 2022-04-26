@@ -26,28 +26,28 @@ locations_list = [
 ]
 
 def get_results_from_api(locs):
-    
+
     """
     Calls the TravelTime API and returns the results in a dictionary.
-    
-    Args: 
-      locs (list): A list of dictionaries containing locations. Must contain keys 
+
+    Args:
+      locs (list): A list of dictionaries containing locations. Must contain keys
         ["id", "coords"].
-      dep_search (dict): A dictionary of departure locations. Must contain keys 
-        ["id", "departure_location_id", "arrival_location_ids", "transportation", 
+      dep_search (dict): A dictionary of departure locations. Must contain keys
+        ["id", "departure_location_id", "arrival_location_ids", "transportation",
         "departure_time", "travel_time", "properties", "range"]
 
-    Returns: 
-      dict: A dictionary of results.   
+    Returns:
+      dict: A dictionary of results.
 
     """
-    
+
     departure = locs[0]["id"]
-    arrival_locations = [locs[index]["id"] for index in range(len(locs)) 
+    arrival_locations = [locs[index]["id"] for index in range(len(locs))
                          if locs[index]["id"]!= departure]
-    
+
     # Define parameters in dictionary for API call
-    
+
     public_parameters = {
     "id": "arrive-at one-to-many search example",
     "arrival_location_ids": arrival_locations,
@@ -57,7 +57,7 @@ def get_results_from_api(locs):
     "travel_time": 3600,
     "properties": ["travel_time"]
     }
-    
+
     private_parameters = {
     "id": "arrive-at one-to-many search example",
     "arrival_location_ids": arrival_locations,
@@ -68,22 +68,22 @@ def get_results_from_api(locs):
     "properties": ["travel_time"]
     }
 
-    # Call the API 
+    # Call the API
     public_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=public_parameters)
 
     private_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=private_parameters)
 
     API_call_time = time.ctime()
-    
+
     # Define empty results dictionary to store results
     res_dict = {"Start" : [], "Destination" : [], "Public_Travel_Duration" : [], "Private_Travel_Duration" : [], "API call time" : []}
     # number_of_arrival_locations = len(arrival_locations)
 
     public_refined_api_data = public_api_data["results"][0]["locations"]
     private_refined_api_data = private_api_data["results"][0]["locations"]
-    
-   
-    # Loop through destination locations and store each journey time into results dictionary.        
+
+
+    # Loop through destination locations and store each journey time into results dictionary.
     for destination_result in public_refined_api_data:
         public_duration_result = destination_result["properties"]["travel_time"]
         destination_name = destination_result["id"]
@@ -91,8 +91,8 @@ def get_results_from_api(locs):
         res_dict["Destination"].append(destination_name)
         res_dict["Public_Travel_Duration"].append(public_duration_result)
         res_dict["API call time"].append(API_call_time)
-    
-    # 
+
+    #
     for index, destination_result in enumerate(private_refined_api_data):
           priv_destination = destination_result["id"]
           pub_dest_same_index = res_dict["Destination"][index]
@@ -103,7 +103,7 @@ def get_results_from_api(locs):
           res_dict["Private_Travel_Duration"].append(private_duration_result)
 
     final_df = pd.DataFrame(res_dict)
-    
+
     return final_df
 
 api_output_df = get_results_from_api(locs=locations_list)
