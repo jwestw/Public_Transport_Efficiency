@@ -99,20 +99,20 @@ If the installation of additional libraries are needed to run your code, you may
 
 #### Downloading VS Code
 
-You can download VS code from internet [VS code download link](https://code.visualstudio.com/download)
+You can download VS code from internet [VS code download link](https://code.visualstudio.com/download). Select the correct installer for your OS and follow the instructions. 
 
 #### Ensure Python is installed on system
-If you are unsure if you have python installed, you can find out within the terminal using the following code. 
+If you are unsure if you have Python installed, you can find out within the terminal using the following code. 
 ```python 
-Python --version
+python --version
 ```
-It will return the version of python if installed. 
-If you do not already have python installed, you can use the following link [Python download](https://www.python.org/downloads/)
+It will return the version of Python if installed. 
+If you do not already have Python installed, you can use the following link [Python download](https://www.python.org/downloads/)
 
 #### Extensions
 Download the Python extension in the extensions button in the side bar. 
 
-![How to download Python extension video](https://user-images.githubusercontent.com/97117990/164270232-fdb693fa-e2fc-419a-b1dd-1514c9f438ad.mov)
+![How to download Python extension video, active="md"](https://user-images.githubusercontent.com/97117990/164270232-fdb693fa-e2fc-419a-b1dd-1514c9f438ad.mov)
 
 #### Set up your environment
 Select Python interpreter by clicking on the status bar
@@ -135,12 +135,12 @@ Then follow either option 1 or 2:
 Option 1: 
 - Open the terminal and navigate to the directory where you would like the cloned respository to be located. 
 Example: 
-```Python 
+```python 
 cd Programming
 ``` 
 Then run 
-```Python 
-git clone "copied link from GitHub"
+```python 
+git clone "git@github.com:jwestw/Public_Transport_Efficiency.git"
 ```
 Option 2: direct from VS code 
 - Within VS code click clone git respository and then paste link into search bar. 
