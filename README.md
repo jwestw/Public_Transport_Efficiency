@@ -37,34 +37,15 @@ The aims of the project are:
 
 Initially created a branch on GitHub from the develop branch. 
 Within the terminal:
-```python 
+```
 git fetch -p
 ``` 
 This will update your local branches in line with remote branches
 Within VS code you can switch branches using the button in the bottom left corner. 
 Within the terminal you can switch branches using:
-```python
+```
 git checkout branch_name
 ```
-
-#### Moving changes from one branch to another
-It is important to ensure that you are in the correct branch before making changes however, you can move changes if needed. 
-The changes need to be added but not yet committed.
-To add the changes:
-```python
-git add file_name
-```
-If you have already committed the changes you'll need to remove the last commit from the current branch:
-```python
-git reset --soft HEAD^
-```
-The changes can then be moved using the following code:
-```python
-git stash 
-git checkout correct_branch
-git stash pop 
-```
-The changes can then be added, committed and pushed to the correct branch. 
 
 ### Virtual environment 
 It is recommended that a virtual environment is used to avoid dependency issues. A virtual environment can be created by following the instructions below and the environment yaml can be used to install the required versions of packages. 
@@ -78,40 +59,37 @@ Follow the instructions within the terminal and it should download correctly.
 #### Create environment
 Use Python version 3.10
 Within the command line:
-```python
+```
 conda create -n transp_eff_310 python=3.10
 ```
-transp_eff_310 was chosen for consistency across developers.
+You can choose any name for your environment, but we suggest using ```transp_eff_310``` so it is consistent with the other developers on this project.
 
 #### Activate environment
 Having created the environment, the command line will give you instructions. 
 This includes how to activate and deactivate the environment:
-```python 
+```
 conda activate transp_eff_310
+```
+Or for windows:
+``` 
+activate transp_eff_310
 ```
 
 #### Install dependencies
-To install the dependencies you must be within the project directory. If not this can be done by running the following within the terminal:
-```python
-$ cd C:\Users\name\project-directory
-```
+To install the dependencies the virtual environment must be activated.
+
 To install the requirements:
-```python
+```
 conda install --file environment.yml
-```
-This may throw an error if you do not have all the packages required
-```python
-PackageNotFoundError: The following packages are not available from current channels
-```
-If this does, write the following with the package names that the error has shown you are missing:
-```python
-pip install packagename
 ```
 The script should now be set up to use.
 
 #### Update the environment yaml 
-The environment yaml needs to be updated whenever a new package or library is installed. 
+If you have installed a new package as part of your development work, then the environment yaml needs to be updated, so the environment can be shared with the wider team.
 To do so:
-```python
+```
 conda env export > environment.yml
 ```
+You will need to add/commit/push the changes to the environment yaml so they get pushed up to the repository and others can run your code. 
+
+If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
