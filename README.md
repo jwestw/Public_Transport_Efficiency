@@ -112,18 +112,18 @@ If you do not already have Python installed, you can use the following link [Pyt
 #### Extensions
 Download the Python extension in the extensions button in the side bar. 
 
-https://user-images.githubusercontent.com/97117990/166443968-ea5d9b45-1830-4374-96d0-6d22a73c1213.mov
+https://user-images.githubusercontent.com/97117990/166445317-21990e28-07a0-4435-be98-8ed8d33d6328.mov
 
 #### Set up your environment
 Select Python interpreter by clicking on the status bar
 Configure the debugger – click on run and debug in the side bar
 
-![Setting up the environment](https://user-images.githubusercontent.com/97117990/164271440-13e40244-d4cb-4f38-9cb7-7a95a7932a75.mov)
+https://user-images.githubusercontent.com/97117990/164271440-13e40244-d4cb-4f38-9cb7-7a95a7932a75.mov
 
 #### Linking to GitHub 
 Download the Github Pull requests and issues extension
 
-![Linking to GitHub](https://user-images.githubusercontent.com/97117990/164272228-3cbd3204-cf4d-4f7d-9e53-6bcc182e4401.mov)
+https://user-images.githubusercontent.com/97117990/164272228-3cbd3204-cf4d-4f7d-9e53-6bcc182e4401.mov
 
 #### Opening the project in VS code 
 If the project has already been cloned, then you can simply click open file and navigate to this folder to open.
@@ -145,6 +145,6 @@ git clone "git@github.com:jwestw/Public_Transport_Efficiency.git"
 Option 2: direct from VS code 
 - Within VS code click clone git respository and then paste link into search bar. 
 
-![Cloning the GitHub repository](https://user-images.githubusercontent.com/97117990/164274806-42f04a32-30db-45e7-a62b-68a3d26b8f6a.mov)
+https://user-images.githubusercontent.com/97117990/164274806-42f04a32-30db-45e7-a62b-68a3d26b8f6a.mov
 
 The repository should now be cloned to your local computer and can be accessed in VS code via this repository. When you open VS code, click open and navigate to the directory you previously selected.   
