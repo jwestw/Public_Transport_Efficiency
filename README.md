@@ -31,6 +31,62 @@ The aims of the project are:
 4.	Calculate an overall metric for the entire city
 5.	Compare the results for each city
 
+## For Developers
+
+### Setting up VS Code 
+
+#### Downloading VS Code
+
+You can download VS code from internet [VS code download link](https://code.visualstudio.com/download). Select the correct installer for your OS and follow the instructions. 
+
+#### Ensure Python is installed on system
+If you are unsure if you have Python installed, you can find out within the terminal using the following code. 
+```python 
+python --version
+```
+It will return the version of Python if installed. 
+If you do not already have Python installed, you can use the following link [Python download](https://www.python.org/downloads/)
+
+#### Extensions
+Download the Python extension in the extensions button in the side bar. 
+
+https://user-images.githubusercontent.com/97117990/166445317-21990e28-07a0-4435-be98-8ed8d33d6328.mov
+
+#### Set up your environment
+Select Python interpreter by clicking on the status bar
+Configure the debugger – click on run and debug in the side bar
+
+https://user-images.githubusercontent.com/97117990/164271440-13e40244-d4cb-4f38-9cb7-7a95a7932a75.mov
+
+#### Linking to GitHub 
+Download the Github Pull requests and issues extension
+
+https://user-images.githubusercontent.com/97117990/164272228-3cbd3204-cf4d-4f7d-9e53-6bcc182e4401.mov
+
+#### Opening the project in VS code 
+If the project has already been cloned, then you can simply click open file and navigate to this folder to open.
+If the repository has not already been cloned this can be done by the following steps.
+a.	First you must have set up a SSH key in GitHub. Follow these instructions if not already complete [SSH key in GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh). 
+b.	From the GitHub project page press the green code button, click SSH and then copy the link. 
+Then follow either option 1 or 2:
+
+Option 1: 
+- Open the terminal and navigate to the directory where you would like the cloned respository to be located. 
+Example: 
+```python 
+cd Programming
+``` 
+Then run 
+```python 
+git clone "git@github.com:jwestw/Public_Transport_Efficiency.git"
+```
+Option 2: direct from VS code 
+- Within VS code click clone git respository and then paste link into search bar. 
+
+https://user-images.githubusercontent.com/97117990/164274806-42f04a32-30db-45e7-a62b-68a3d26b8f6a.mov
+
+The repository should now be cloned to your local computer and can be accessed in VS code via this repository. When you open VS code, click open and navigate to the directory you previously selected.   
+
 ### Using VS code
 
 #### Create new branch 
