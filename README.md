@@ -30,3 +30,66 @@ The aims of the project are:
 3.	Calculate a ratio between public and private transport journey times 
 4.	Calculate an overall metric for the entire city
 5.	Compare the results for each city
+
+### Using VS code
+
+#### Create new branch 
+
+Initially created a branch on GitHub from the develop branch. 
+Within the terminal:
+```
+git fetch -p
+``` 
+This will update your local branches in line with remote branches
+Within VS code you can switch branches using the button in the bottom left corner. 
+Within the terminal you can switch branches using:
+```
+git checkout branch_name
+```
+
+### Virtual environment 
+It is recommended that a virtual environment is used to avoid dependency issues. A virtual environment can be created by following the instructions below and the environment yaml can be used to install the required versions of packages. 
+
+#### Install Miniconda
+Conda is the recommended for environment management. Both miniconda and and the full Anaconda can be used however, the following instructions is based on using miniconda. 
+Download miniconda from this link (https://docs.conda.io/en/latest/miniconda.html). Select the correct installer for your OS and follow the instructions.
+For Mac, go to terminal and run bash download_file_path (drag and drop the downloaded file into the terminal). 
+Follow the instructions within the terminal and it should download correctly. 
+
+#### Create environment
+Use Python version 3.10
+Within the command line:
+```
+conda create -n transp_eff_310 python=3.10
+```
+You can choose any name for your environment, but we suggest using ```transp_eff_310``` so it is consistent with the other developers on this project.
+
+#### Activate environment
+Having created the environment, the command line will give you instructions. 
+This includes how to activate and deactivate the environment:
+```
+conda activate transp_eff_310
+```
+Or for windows:
+``` 
+activate transp_eff_310
+```
+
+#### Install dependencies
+To install the dependencies the virtual environment must be activated.
+
+To install the requirements:
+```
+conda install --file environment.yml
+```
+The script should now be set up to use.
+
+#### Update the environment yaml 
+If you have installed a new package as part of your development work, then the environment yaml needs to be updated, so the environment can be shared with the wider team.
+To do so:
+```
+conda env export > environment.yml
+```
+You will need to add/commit/push the changes to the environment yaml so they get pushed up to the repository and others can run your code. 
+
+If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
