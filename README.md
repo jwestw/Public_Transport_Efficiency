@@ -93,3 +93,27 @@ conda env export > environment.yml
 You will need to add/commit/push the changes to the environment yaml so they get pushed up to the repository and others can run your code. 
 
 If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
+## For Developers
+
+### Setting up and Using VS Code 
+
+### Downloading VS Code
+
+You can download VS code from internet [VS code download link](https://code.visualstudio.com/download)
+
+### Ensure Python is installed on system
+If you are unsure if you have python installed, you can find out within the terminal using the following code. 
+```python 
+Python --version
+```
+It will return the version of python if installed. 
+If you do not already have python installed, you can use the following link [Python download](https://www.python.org/downloads/)
+
+### Extensions
+Download the Python extension in the extensions button in the side bar. 
+
+![How to download Python extension video](/Users/chloemurrell/Desktop/Download Python extension.mov)
+
+### Set up your environment
+Select Python interpreter by clicking on the status bar
+Configure the debugger – click on run and debug in the side bar
