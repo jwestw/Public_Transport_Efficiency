@@ -33,27 +33,39 @@ The aims of the project are:
 
 ## For Developers
 
-### Setting up VS Code 
+The transport efficiency project is an open source project that you can contribute to. We are looking for developers and those with domain knowledge (about transport, statistics, analysis etc) to contribute to the code and help us with our project. 
+
+To get developers set up, we have created this guide to make setting up your working environment easier. 
+
+### Using VS Code 
+
+We strongly suggest using VS Code for programming. It is a great tool, and since that is what we are using, if you run into problems we are more likely to be able to help. 
 
 #### Downloading VS Code
 
 You can download VS code from internet [VS code download link](https://code.visualstudio.com/download). Select the correct installer for your OS and follow the instructions. 
 
 #### Ensure Python is installed on system
-If you are unsure if you have Python installed, you can find out within the terminal using the following code. 
+This project is coded in Python primarily (though we might add other languages later). If you are unsure if you have Python installed, you can find out within the terminal using the following code. 
+
 ```python 
 python --version
 ```
+
 It will return the version of Python if installed. 
-If you do not already have Python installed, you can use the following link [Python download](https://www.python.org/downloads/)
+
+If you do not already have Python installed, you can use the following link [Python download](https://www.python.org/downloads/). We recommend that you use a virtual environment before you start making any changes (see below).
 
 #### Extensions
 Download the Python extension in the extensions button in the side bar. 
 
 https://user-images.githubusercontent.com/97117990/166445317-21990e28-07a0-4435-be98-8ed8d33d6328.mov
 
-#### Set up your environment
-Select Python interpreter by clicking on the status bar
+#### Connect your environment
+Using a virtual envionment is covered in the section "Virtual environments" in this readme.
+
+To get VS Code to work with your virtual environment, select the Python interpreter by clicking on the status bar.
+
 Configure the debugger – click on run and debug in the side bar
 
 https://user-images.githubusercontent.com/97117990/164271440-13e40244-d4cb-4f38-9cb7-7a95a7932a75.mov
@@ -87,7 +99,7 @@ https://user-images.githubusercontent.com/97117990/164274806-42f04a32-30db-45e7-
 
 The repository should now be cloned to your local computer and can be accessed in VS code via this repository. When you open VS code, click open and navigate to the directory you previously selected.   
 
-### Using VS code
+### Version control
 
 #### Create new branch 
 
@@ -103,7 +115,7 @@ Within the terminal you can switch branches using:
 git checkout branch_name
 ```
 
-### Virtual environment 
+### Virtual environments 
 It is recommended that a virtual environment is used to avoid dependency issues. A virtual environment can be created by following the instructions below and the environment yaml can be used to install the required versions of packages. 
 
 #### Install Miniconda
