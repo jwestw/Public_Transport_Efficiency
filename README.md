@@ -30,3 +30,8 @@ The aims of the project are:
 3.	Calculate a ratio between public and private transport journey times
 4.	Calculate an overall metric for the entire city
 5.	Compare the results for each city
+
+### Setting up pre-commits
+To set up pre-commits, go to [pre-commits.com](https://pre-commit.com/#installation) and follow the installation instructions. 
+
+For this project, flake8 will also be used as a tool for style guide enforcement of PEP8. To set up flake8, go to [flake8 documentation](https://flake8.pycqa.org/en/latest/#installation) and follow the instructions to install it. Then go to [configuring flake8](https://flake8.pycqa.org/en/latest/user/configuration.html) to configure it to carry out the exact checks you require. 
