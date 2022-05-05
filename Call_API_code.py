@@ -71,19 +71,15 @@ def get_results_from_api(locs):
       "travel_time": 3600,
       "properties": ["travel_time"]
       }
-
     # Call the API
-    public_api_data = ttpy.time_filter_fast(locations=locs,
-        arrival_one_to_many=public_parameters)
-
-    private_api_data = ttpy.time_filter_fast(locations=locs,
-        arrival_one_to_many=private_parameters)
+    public_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=public_parameters)
+    private_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=private_parameters)
 
     API_call_time = time.ctime()
 
     # Define empty results dictionary to store results
     res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
-        "Private_Travel_Duration": [], "API call time": []}
+            "Private_Travel_Duration": [], "API call time": []}
     # number_of_arrival_locations = len(arrival_locations)
 
     public_refined_api_data = public_api_data["results"][0]["locations"]
@@ -98,13 +94,12 @@ def get_results_from_api(locs):
         res_dict["Public_Travel_Duration"].append(public_duration_result)
         res_dict["API call time"].append(API_call_time)
 
-
     for index, destination_result in enumerate(private_refined_api_data):
         priv_destination = destination_result["id"]
         pub_dest_same_index = res_dict["Destination"][index]
         if priv_destination != pub_dest_same_index:
-                print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
-                raise
+            print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
+            raise
         private_duration_result = destination_result
         ["properties"]["travel_time"]
         res_dict["Private_Travel_Duration"].append(private_duration_result)
