@@ -11,15 +11,18 @@ jobs:
     name: Run flake8
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
           python-version: "3.10"
       - name: flake8 Lint
         uses: py-actions/flake8@v2
-    # name: Run PyLint
-      # steps:
+      - name: Run PyLint
+  pylint-lint:
+    runs-on: ubuntu-latest
+    name: Run pylint
+    steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
