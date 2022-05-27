@@ -24,7 +24,7 @@ jobs:
           pylint $(git ls-files '*.py')
   flake8-lint:
     runs-on: ubuntu-latest
-    name: Run flake8
+    name: Lint
     steps:
       - name: Check out source repository
         uses: actions/checkout@v3
@@ -34,4 +34,3 @@ jobs:
           python-version: "3.10"
       - name: flake8 Lint
         uses: py-actions/flake8@v2
-      - name: Run PyLint
