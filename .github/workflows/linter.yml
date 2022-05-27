@@ -18,11 +18,8 @@ jobs:
           python-version: "3.10"
       - name: flake8 Lint
         uses: py-actions/flake8@v2
-
-    build:
-      runs-on: ubuntu-latest
-      name: Run PyLint
-      steps:
+    name: Run PyLint
+    steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
