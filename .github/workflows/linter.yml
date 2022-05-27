@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 19-lint-code-actions
-
 jobs:
   pylint-lint:
     runs-on: ubuntu-latest
