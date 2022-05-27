@@ -1,10 +1,8 @@
 
-import requests
 import pandas as pd
 import time
 
 import traveltimepy as ttpy
-from datetime import datetime
 import os
 
 os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
@@ -94,13 +92,14 @@ def get_results_from_api(locs):
     
     # 
     for index, destination_result in enumerate(private_refined_api_data):
-          priv_destination = destination_result["id"]
-          pub_dest_same_index = res_dict["Destination"][index]
-          if priv_destination != pub_dest_same_index:
-                print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
-                raise
-          private_duration_result = destination_result["properties"]["travel_time"]
-          res_dict["Private_Travel_Duration"].append(private_duration_result)
+        priv_destination = destination_result["id"]
+        pub_dest_same_index = res_dict["Destination"][index]
+        if priv_destination != pub_dest_same_index:
+            print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
+            raise
+        else:
+            private_duration_result = destination_result["properties"]["travel_time"]
+            res_dict["Private_Travel_Duration"].append(private_duration_result)
 
     final_df = pd.DataFrame(res_dict)
     
