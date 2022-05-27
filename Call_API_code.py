@@ -78,7 +78,7 @@ def get_results_from_api(locs):
         locations=locs, arrival_one_to_many=private_parameters
     )
 
-    API_call_time = time.ctime()
+    api_call_time = time.ctime()
 
     # Define empty results dictionary to store results
     res_dict = {
@@ -100,7 +100,7 @@ def get_results_from_api(locs):
         res_dict["Start"].append(departure)
         res_dict["Destination"].append(destination_name)
         res_dict["Public_Travel_Duration"].append(public_duration_result)
-        res_dict["API call time"].append(API_call_time)
+        res_dict["API call time"].append(api_call_time)
 
     #
     for index, destination_result in enumerate(private_refined_api_data):
