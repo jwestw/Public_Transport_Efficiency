@@ -92,7 +92,8 @@ def get_results_from_api(locs):
     public_refined_api_data = public_api_data["results"][0]["locations"]
     private_refined_api_data = private_api_data["results"][0]["locations"]
 
-    # Loop through destination locations and store each journey time into results dictionary.
+    # Loop through destination locations and store each journey time 
+    # into results dictionary.
     for destination_result in public_refined_api_data:
         public_duration_result = destination_result["properties"]["travel_time"]
         destination_name = destination_result["id"]
