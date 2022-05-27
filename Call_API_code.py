@@ -1,8 +1,8 @@
-import pandas as pd
+import os
 import time
 
+import pandas as pd
 import traveltimepy as ttpy
-import os
 
 os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
