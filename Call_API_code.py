@@ -110,7 +110,7 @@ def get_results_from_api(locs):
             print(
                 f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}"
             )
-            raise
+            raise TypeError('private and public destinations not the same')
         else:
             private_duration_result = destination_result["properties"]["travel_time"]
             res_dict["Private_Travel_Duration"].append(private_duration_result)
