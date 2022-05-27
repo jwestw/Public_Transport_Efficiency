@@ -108,9 +108,10 @@ def get_results_from_api(locs):
         pub_dest_same_index = res_dict["Destination"][index]
         if priv_destination != pub_dest_same_index:
             print(
-                f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}"
+                f"""Public destination: {res_dict['Destination'][index]},
+                Private Destination: {destination_result['id']}"""
             )
-            print("private and public destinations not the same")
+            print("Private and public destinations not the same")
         else:
             private_duration_result = destination_result["properties"]["travel_time"]
             res_dict["Private_Travel_Duration"].append(private_duration_result)
