@@ -20,8 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint
       - name: Analysing the code with pylint
-        run: |
-          pylint $(git ls-files '*.py')
+        run: pylint $(git ls-files '*.py')
   flake8-lint:
     runs-on: ubuntu-latest
     name: Run flake8
