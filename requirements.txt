@@ -1,0 +1,19 @@
+black==22.3.0
+certifi==2022.5.18.1
+charset-normalizer==2.0.12
+click==8.1.3
+colorama==0.4.4
+idna==3.3
+mypy-extensions==0.4.3
+numpy==1.22.4
+pandas==1.4.2
+pathspec==0.9.0
+platformdirs==2.5.2
+python-dateutil==2.8.2
+pytz==2022.1
+requests==2.27.1
+six==1.16.0
+tomli==2.0.1
+traveltimepy @ git+https://github.com/traveltime-dev/traveltime-python-sdk@26d69d9cefe5feb099e9cdeb991bf12ed2c859cf
+urllib3==1.26.9
+wincertstore==0.2
