@@ -1,9 +1,9 @@
 name: flake8 and pylint
 
 on: 
-  push:
+  pull-request:
     branches:
-      - 19-lint-code-actions
+      - develop
 jobs:
   pylint-lint:
     runs-on: ubuntu-latest
