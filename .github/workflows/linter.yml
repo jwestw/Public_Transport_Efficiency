@@ -19,7 +19,7 @@ jobs:
       - name: flake8 Lint
         uses: py-actions/flake8@v2
 
-    pylint-lint:
+    build:
       runs-on: ubuntu-latest
       name: Run PyLint
       steps:
