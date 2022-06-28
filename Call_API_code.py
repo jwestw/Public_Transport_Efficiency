@@ -10,20 +10,24 @@ import os
 os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
-locations_list = [
-    {"id": "London center", "coords": {"lat": 51.508930, "lng": -0.131387}},
-    {"id": "Hyde Park", "coords": {"lat": 51.508824, "lng": -0.167093}},
-    {"id": "ZSL London Zoo", "coords": {"lat": 51.536067, "lng": -0.153596}},
-    {"id": "London Museum", "coords": {"lat": 51.520464 , "lng": -0.126312}},
-    {"id": "Big Ben", "coords": {"lat": 51.500896 , "lng": -0.124584}},
-    {"id": "Charing Cross Station", "coords": {"lat": 51.508567 , "lng": -0.125633}},
-    {"id": "London center2", "coords": {"lat": 51.508930, "lng": -0.131387}},
-    {"id": "Hyde Park2", "coords": {"lat": 51.508824, "lng": -0.167093}},
-    {"id": "ZSL London Zoo2", "coords": {"lat": 51.536067, "lng": -0.153596}},
-    {"id": "London Museum2", "coords": {"lat": 51.520464 , "lng": -0.126312}},
-    {"id": "Big Ben2", "coords": {"lat": 51.500896 , "lng": -0.124584}},
-    {"id": "Charing Cross Station2", "coords": {"lat": 51.508567 , "lng": -0.125633}}
-]
+london_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/locations_london.csv")
+
+grimsby_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/locations_grimsby.csv")
+
+# Put into function and apply them seperately.
+london_locations = []
+for index, row in london_locations_csv.iterrows():
+    london_locations.append({
+            'id': row['Location name'],
+            'coords': {'lat': row['Latitude'], 'lng': row["Longnitude"]}
+            })
+
+grimsby_locations = []
+for index, row in grimsby_locations_csv.iterrows():
+    grimsby_locations.append({
+            'id': row['Location name'],
+            'coords': {'lat': row['Latitude'], 'lng': row["Longnitude"]}
+            })
 
 def get_results_from_api(locs):
     
@@ -106,5 +110,8 @@ def get_results_from_api(locs):
     
     return final_df
 
-api_output_df = get_results_from_api(locs=locations_list)
-print(api_output_df)
+api_output_df_london = get_results_from_api(locs=london_locations)
+api_output_df_grimsby = get_results_from_api(locs=grimsby_locations)
+
+print(api_output_df_london)
+print(api_output_df_grimsby)
