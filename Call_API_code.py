@@ -16,20 +16,27 @@ london_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport 
 
 grimsby_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/locations_grimsby.csv")
 
-# Put into function and apply them seperately.
-london_locations = []
-for index, row in london_locations_csv.iterrows():
-    london_locations.append({
-            'id': row['Location name'],
-            'coords': {'lat': row['Latitude'], 'lng': row["Longnitude"]}
-            })
+# Update column headers in this file and the the actual file - still doesn't run need to sort names
 
-grimsby_locations = []
-for index, row in grimsby_locations_csv.iterrows():
-    grimsby_locations.append({
-            'id': row['Location name'],
-            'coords': {'lat': row['Latitude'], 'lng': row["Longnitude"]}
-            })
+def create_locations_list(file):
+
+  df = pd.DataFrame({"id":file["id"], 
+                      "coords": file[["lng", 
+                      "lat"]].to_dict("records")})
+  df = df.to_dict('records')
+
+  return df
+
+london_locations = create_locations_list(london_locations_df)
+grimsby_locations = create_locations_list(grimsby_locations_df)
+
+# def create_locations_list(file):
+#   for index, row in file.iterrows():
+#       list.append({
+#               'id': row['Location name'],
+#               'coords': {'lat': row['Latitude'], 'lng': row["Longnitude"]}
+#               })
+#   return list
 
 
 def get_results_from_api(locs):
@@ -112,7 +119,7 @@ def get_results_from_api(locs):
     return final_df
 
 api_output_df_london = get_results_from_api(locs=london_locations)
-api_output_df_grimsby = get_results_from_api(locs=grimsby_locations)
+# api_output_df_grimsby = get_results_from_api(locs=grimsby_locations)
 
 print(api_output_df_london)
 print(api_output_df_grimsby)
