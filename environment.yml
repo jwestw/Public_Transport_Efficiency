@@ -46,5 +46,20 @@ dependencies:
   - zlib=1.2.12=h4dc903c_1
   - pip:
     - certifi==2021.10.8
+    - cfgv==3.3.1
+    - distlib==0.3.4
+    - filelock==3.6.0
+    - flake8==4.0.1
+    - identify==2.4.12
+    - mccabe==0.6.1
+    - nodeenv==1.6.0
+    - platformdirs==2.5.2
+    - pre-commit==2.18.1
+    - pycodestyle==2.8.0
+    - pyflakes==2.4.0
+    - pyyaml==6.0
+    - toml==0.10.2
+    - traveltimepy==0.2
+    - virtualenv==20.14.1
     - traveltimepy==0.2
 prefix: /Users/chloemurrell/miniconda3/envs/transp_eff_310
