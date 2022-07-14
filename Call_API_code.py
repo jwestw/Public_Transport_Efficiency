@@ -2,6 +2,8 @@
 import requests
 import pandas as pd
 import time
+import geopandas as gpd
+from shapely.geometry import Point
 
 import traveltimepy as ttpy
 from datetime import datetime
@@ -11,32 +13,75 @@ os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")london_locations_df
 
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
+points_of_interest_newport_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/points-of-interest-newport-csv.csv", delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
 
-london_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/locations_london.csv")
+def clean_points_of_interest_df(df_in):
 
-grimsby_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/locations_grimsby.csv")
+  # Select relevant columns
+  df_clean = points_of_interest_newport_df[["NAME", "FEATURE_EASTING", "FEATURE_NORTHING"]]
+  # Rename "NAME" column 
+  df_clean = df_clean.rename(columns={"NAME":"id"})
 
-# Update column headers in this file and the the actual file - still doesn't run need to sort names
+  return df_clean
 
-def create_locations_list(file):
+newport_locations_df = clean_points_of_interest_df(points_of_interest_newport_df)
 
-  df = pd.DataFrame({"id":file["id"], 
-                      "coords": file[["lng", 
-                      "lat"]].to_dict("records")})
-  df = df.to_dict('records')
+def convert_coordinates(df_in, coord_col_1, coord_col_2):
 
-  return df
+  # Convert northing and easting -> longnitude and latitude
+  geometry = [Point(xy) for xy in zip(df_in[coord_col_1], df_in[coord_col_2])]
 
-london_locations = create_locations_list(london_locations_df)
-grimsby_locations = create_locations_list(grimsby_locations_df)
+  geo_df = gpd.GeoDataFrame(df_in, geometry=geometry)
 
-# def create_locations_list(file):
-#   for index, row in file.iterrows():
-#       list.append({
-#               'id': row['Location name'],
-#               'coords': {'lat': row['Latitude'], 'lng': row["Longnitude"]}
-#               })
-#   return list
+  geo_df.crs = "EPSG:27700"
+  
+  geo_df.to_crs("EPSG:4326", inplace=True)
+
+  # Extract lng and lat coodinates into separate columns from POINT() column. 
+  geo_df['lng'] = geo_df['geometry'].x
+  geo_df['lat'] = geo_df['geometry'].y
+
+  # Convert to pandas df
+  pd_df = pd.DataFrame(df_in)
+
+  # Drop unnecessary columns
+  pd_df = pd_df.drop([coord_col_1, coord_col_2, "geometry"], axis=1)
+
+  # Rename longnitude column in line with API requirements - delete
+  pd_df = pd_df.rename(columns={"lon":"lng"})
+
+  # Add number to end of duplicate id  values
+  mask = pd_df['id'].duplicated()
+  pd_df.loc[mask, 'id'] += pd_df.groupby('id').cumcount().add(1).astype(str)
+
+  # Drop na values - this occurs do to error in the original spreadsheet which needs fixing
+  pd_df = pd_df.dropna(axis=0) 
+                            
+  return pd_df
+
+newport_locations_df = convert_coordinates(newport_locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
+
+def create_locations_list(df_in):
+
+  """
+  Turns locations df into a list of locations with a dictionary of coordinates.
+
+  Args:
+      df_in (pd.DataFrame): dataframe of locations and respective coordinates.
+        Should have column names "id", "lat", "lng" which correspond to the location name, 
+        latitude and longnitude.
+
+  Returns:
+      list: locations_list a list of locations within dictionaries ready for 
+        the get_results_from_api function.
+  """
+
+  df = pd.DataFrame({"id":df_in["id"], "coords": df_in[["lat", "lng"]].to_dict("records")})
+  locations_list = df.to_dict('records')
+
+  return locations_list
+
+newport_locations = create_locations_list(newport_locations_df)
 
 
 def get_results_from_api(locs):
@@ -104,23 +149,21 @@ def get_results_from_api(locs):
         res_dict["Destination"].append(destination_name)
         res_dict["Public_Travel_Duration"].append(public_duration_result)
         res_dict["API call time"].append(API_call_time)
-
+    
+    # Ensure public and private destination are the same.
     for index, destination_result in enumerate(private_refined_api_data):
-        priv_destination = destination_result["id"]
-        pub_dest_same_index = res_dict["Destination"][index]
-        if priv_destination != pub_dest_same_index:
-            print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
-            raise
-        private_duration_result = destination_result["properties"]["travel_time"]
-        res_dict["Private_Travel_Duration"].append(private_duration_result)
+          priv_destination = destination_result["id"]
+          pub_dest_same_index = res_dict["Destination"][index]
+          if priv_destination != pub_dest_same_index:
+                print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
+                raise
+          private_duration_result = destination_result["properties"]["travel_time"]
+          res_dict["Private_Travel_Duration"].append(private_duration_result)
 
     final_df = pd.DataFrame(res_dict)
 
     return final_df
 
-api_output_df_london = get_results_from_api(locs=london_locations)
-# api_output_df_grimsby = get_results_from_api(locs=grimsby_locations)
+api_output_df_newport = get_results_from_api(locs=newport_locations)
 
-print(api_output_df_london)
-print(api_output_df_grimsby)
-
+print(api_output_df_newport)
