@@ -31,10 +31,6 @@ The aims of the project are:
 4.	Calculate an overall metric for the entire city
 5.	Compare the results for each city
 
-### Setting up pre-commits
-To set up pre-commits, go to [pre-commits.com](https://pre-commit.com/#installation) and follow the installation instructions. The includes instructions on installing pre-commits, setting up a pre-commit-config.yml and running pre-commits against all the files.
-
-For this project, flake8 will also be used as a tool for style guide enforcement of PEP8. To set up flake8, go to [flake8 documentation](https://flake8.pycqa.org/en/latest/#installation) and follow the instructions to install it. Then go to [configuring flake8](https://flake8.pycqa.org/en/latest/user/configuration.html) to configure it to carry out the exact checks you require. 
 ## For Developers
 
 The transport efficiency project is an open source project that you can contribute to. We are looking for developers and those with domain knowledge (about transport, statistics, analysis etc) to contribute to the code and help us with our project. 
@@ -118,6 +114,10 @@ Within the terminal you can switch branches using:
 ```
 git checkout branch_name
 ```
+### Setting up pre-commits
+To set up pre-commits, go to [pre-commits.com](https://pre-commit.com/#installation) and follow the installation instructions. This includes instructions on installing pre-commits, setting up a pre-commit-config.yml and running pre-commits against all the files.
+
+For this project, flake8 will also be used as a tool for style guide enforcement of PEP8. To set up flake8, go to [flake8 documentation](https://flake8.pycqa.org/en/latest/#installation) and follow the instructions to install it. Then go to [configuring flake8](https://flake8.pycqa.org/en/latest/user/configuration.html) to configure it to carry out the exact checks you require. 
 
 ### Virtual environments 
 It is recommended that a virtual environment is used to avoid dependency issues. A virtual environment can be created by following the instructions below and the environment yaml can be used to install the required versions of packages. 
