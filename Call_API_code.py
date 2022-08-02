@@ -1,9 +1,9 @@
-
 import requests
 import pandas as pd
 import time
 import geopandas as gpd
 from shapely.geometry import Point
+import yaml
 
 import traveltimepy as ttpy
 from datetime import datetime
@@ -12,18 +12,25 @@ import os
 os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
-points_of_interest_newport_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/points-of-interest-newport-csv.csv", delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
+def load_config(yaml_path:str):
+
+  with open(yaml_path, 'r') as f:
+    return yaml.safe_load(f)
+
+config = load_config("config.yaml")
+
+points_of_interest_df = pd.read_csv(config["input_data"]["input_path"], delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
 
 def clean_points_of_interest_df(df_in):
 
   # Select relevant columns
-  df_clean = points_of_interest_newport_df[["NAME", "FEATURE_EASTING", "FEATURE_NORTHING"]]
+  df_clean = points_of_interest_df[["NAME", "FEATURE_EASTING", "FEATURE_NORTHING"]]
   # Rename "NAME" column 
   df_clean = df_clean.rename(columns={"NAME":"id"})
 
   return df_clean
 
-newport_locations_df = clean_points_of_interest_df(points_of_interest_newport_df)
+locations_df = clean_points_of_interest_df(points_of_interest_df)
 
 def convert_coordinates(df_in, coord_col_1, coord_col_2):
 
@@ -58,7 +65,7 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
                             
   return pd_df
 
-newport_locations_df = convert_coordinates(newport_locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
+locations_df = convert_coordinates(locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
 
 def create_locations_list(df_in):
 
@@ -80,7 +87,7 @@ def create_locations_list(df_in):
 
   return locations_list
 
-newport_locations = create_locations_list(newport_locations_df)
+locations = create_locations_list(locations_df)
 
 def get_results_from_api(locs):
     
@@ -120,8 +127,8 @@ def get_results_from_api(locs):
     "arrival_location_ids": arrival_locations,
     "departure_location_id": departure,
     "transportation": {"type": "driving"},
-    "arrival_time_period": "weekday_morning",
-    "travel_time": 3600,
+    "arrival_time_period": config["api_call_variables"]["arrival_time_period"],
+    "travel_time": config["api_call_variables"]["travel_time"],
     "properties": ["travel_time"]
     }
 
@@ -133,7 +140,7 @@ def get_results_from_api(locs):
     API_call_time = time.ctime()
     
     # Define empty results dictionary to store results.
-    res_dict = {"Start" : [], "Destination" : [], "Public_Travel_Duration" : [], "Private_Travel_Duration" : [], "API call time" : []}
+    res_dict = {"Start" : [], "Destination" : [], "Public_Travel_Duration" : [], "Private_Travel_Duration" : [], "API_call_time" : [], "Arrival_Time_Period" : [], "Location": []}
     # number_of_arrival_locations = len(arrival_locations)
 
     public_refined_api_data = public_api_data["results"][0]["locations"]
@@ -147,7 +154,9 @@ def get_results_from_api(locs):
         res_dict["Start"].append(departure)
         res_dict["Destination"].append(destination_name)
         res_dict["Public_Travel_Duration"].append(public_duration_result)
-        res_dict["API call time"].append(API_call_time)
+        res_dict["API_call_time"].append(API_call_time)
+        res_dict["Location"].append(config["api_call_variables"]["city_name"])
+        res_dict["Arrival_Time_Period"].append(config["api_call_variables"]["arrival_time_period"])
     
     # Ensure public and private destination are the same.
     for index, destination_result in enumerate(private_refined_api_data):
@@ -163,6 +172,25 @@ def get_results_from_api(locs):
     
     return final_df
 
-api_output_df_newport = get_results_from_api(locs=newport_locations)
+if config["api_call_variables"]["call_api"] == True:
+  api_output_df = get_results_from_api(locs=locations)
 
-print(api_output_df_newport)
+  print(api_output_df)
+
+
+if config["output_data"]["store_h5"] == True:
+
+  store = pd.HDFStore('results.h5')
+  store.append("results", api_output_df, append=True)
+
+  store.close()
+
+  store.is_open
+
+store = pd.read_hdf("results.h5")
+
+print(store)
+
+if config["output_data"]["write_to_excel"] == True:
+  with pd.ExcelWriter(config["output_data"]["output_path"]) as writer:
+      store.to_excel(writer)
