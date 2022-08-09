@@ -1,0 +1,4 @@
+[flake8]
+# E128 is under-indented line
+# E501 line too long
+ignore = E128, E121, E123, E126, E501, E401

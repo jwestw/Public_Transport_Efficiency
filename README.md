@@ -5,29 +5,29 @@ This project is currently being carried out by the Data Science Skills Team (DSS
 Members involved are [James Westwood](https://github.com/jwestw), [Chloe Murrell](https://github.com/chloemurrell) and [Antonio Felton](https://github.com/Antonio-John).
 
 ## Overview
-A project to measure the efficiency of public transport systems in the UK. 
+A project to measure the efficiency of public transport systems in the UK.
 
 By collecting data for thousands of different journeys across multiple cities, the journey time can be compared for public vs private transport  to assess which is considered more 'efficient'.
 
-For clarity, for the purpose of this project efficiency is defined in terms of time efficiency which means to travel to the desired destination while minimising the time and effort required. 
+For clarity, for the purpose of this project efficiency is defined in terms of time efficiency which means to travel to the desired destination while minimising the time and effort required.
 
-## Aims of the project 
+## Aims of the project
 
-### The concept 
+### The concept
 When deciding how to travel into or around a city most people would make the rational decision to choose the mode of transport which will get them to their desired destination the quickest. In London this is public transport however, for many other cities around the UK this is not the case and public transport is in fact much slower. But how much slower and how do different cities compare to London or each other?
 
-This project aims to go beyond current studies by providing comprehensive analysis of public vs private transport clearly demonstrating the efficiency of public transport systems in the UK. Through quantifying journey times within cities throughout the UK and producing a single numerical metric, regional and geographical comparison can be made. 
+This project aims to go beyond current studies by providing comprehensive analysis of public vs private transport clearly demonstrating the efficiency of public transport systems in the UK. Through quantifying journey times within cities throughout the UK and producing a single numerical metric, regional and geographical comparison can be made.
 
-### Objectives 
+### Objectives
 The aims of the project are:
-- To build a data pipeline that can analyse data to assess the efficiency of public transport systems in the UK. 
+- To build a data pipeline that can analyse data to assess the efficiency of public transport systems in the UK.
 - To make the code reusable so that it can be used across numerous cities and the project can be expanded to also consider international cities.
-- Conclude with analysis which has the capability of providing insights into the time efficiency of public and private transport and benchmark cities against each other. 
+- Conclude with analysis which has the capability of providing insights into the time efficiency of public and private transport and benchmark cities against each other.
 
 ## Process
 1.	Take a sample of journeys for a particular city
 2.	Calculate journey time metrics for both public and private transport
-3.	Calculate a ratio between public and private transport journey times 
+3.	Calculate a ratio between public and private transport journey times
 4.	Calculate an overall metric for the entire city
 5.	Compare the results for each city
 
@@ -114,6 +114,10 @@ Within the terminal you can switch branches using:
 ```
 git checkout branch_name
 ```
+### Setting up pre-commits
+To set up pre-commits, go to [pre-commits.com](https://pre-commit.com/#installation) and follow the installation instructions. This includes instructions on installing pre-commits, setting up a pre-commit-config.yml and running pre-commits against all the files.
+
+For this project, flake8 will also be used as a tool for style guide enforcement of PEP8. To set up flake8, go to [flake8 documentation](https://flake8.pycqa.org/en/latest/#installation) and follow the instructions to install it. Then go to [configuring flake8](https://flake8.pycqa.org/en/latest/user/configuration.html) to configure it to carry out the exact checks you require. 
 
 ### Virtual environments 
 It is recommended that a virtual environment is used to avoid dependency issues. A virtual environment can be created by following the instructions below and the environment yaml can be used to install the required versions of packages. 
