@@ -1,0 +1,15 @@
+input_data:
+  input_path: input_data/points-of-interest-newport-csv.csv
+
+api_call_variables:
+  call_api: False
+  city_name: Newport
+  arrival_time_period: weekday_morning
+  travel_time: 3600
+
+output_data: 
+  h5_file: results.h5
+  output_path: output_data/results.xlsx
+  store_h5: False
+  write_to_excel: True
+  
