@@ -100,8 +100,7 @@ def get_results_from_api(locs):
         if priv_destination != pub_dest_same_index:
             print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
             raise
-        private_duration_result = destination_result
-        ["properties"]["travel_time"]
+        private_duration_result = destination_result["properties"]["travel_time"]
         res_dict["Private_Travel_Duration"].append(private_duration_result)
 
     final_df = pd.DataFrame(res_dict)
