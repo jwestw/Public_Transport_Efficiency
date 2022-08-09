@@ -9,8 +9,7 @@ import traveltimepy as ttpy
 from datetime import datetime
 import os
 
-os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")london_locations_df = pd.read_csv(r"/Users/chloemurrell/DSST - Public Transport Efficiency/locations_london.csv")
-
+os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
 def load_config(yaml_path:str):
