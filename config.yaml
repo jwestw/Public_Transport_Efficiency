@@ -1,5 +1,5 @@
 input_data:
-  input_path: /Users/chloemurrell/DSST - Public Transport Efficiency/points-of-interest-newport-csv.csv
+  input_path: input_data/points-of-interest-newport-csv.csv
 
 api_call_variables:
   call_api: False
@@ -9,7 +9,7 @@ api_call_variables:
 
 output_data: 
   h5_file: results.h5
-  output_path: /Users/chloemurrell/DSST - Public Transport Efficiency/results.xlsx
+  output_path: output_data/results.xlsx
   store_h5: False
   write_to_excel: True
   

@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 # Data folder
-/data/*.csv
+input_data/*
+output_data/*
+!*input_data/data_placeholder
+!*output_data/data_placeholder
