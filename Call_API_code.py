@@ -19,7 +19,36 @@ def load_config(yaml_path:str):
 
 config = load_config("config.yaml")
 
-points_of_interest_df = pd.read_csv(config["input_data"]["input_path"], delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
+
+def make_data_path(direction: str, file_name: str, config=config):
+  """Creates the path for the data files to be read or written from.
+
+  Args:
+      direction (str): Either in or out
+      file_name (str): Name of the file to be read or written to
+      config (dict): Dict derived from the config file
+
+  Returns:
+      str: Relative path of the file to be read or written to
+  """
+  dir_dict: {"in": config["input_data"]["input_folder"], 
+             "out": config["output_data"]["output_folder"]}
+  rel_path = os.path.join(dir_dict[direction], file_name)
+  
+  return rel_path
+
+# Make paths
+csv_name = config["input_data"]["input_file"]
+csv_in = make_data_path("in", csv_name)
+
+hd_name = config["output_data"]["h5_file"]
+h5_out = = make_data_path("out", hd_name)
+
+excel_name = config["output_data"]["output_file"]
+excel_out = make_data_path("out", excel_name)
+
+# Read in locations data
+points_of_interest_df = pd.read_csv(csv_in, delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
 
 def clean_points_of_interest_df(df_in):
 
@@ -181,17 +210,17 @@ if config["api_call_variables"]["call_api"] == True:
 
 if config["output_data"]["store_h5"] == True:
 
-  store = pd.HDFStore('results.h5')
+  store = pd.HDFStore(h5_out)
   store.append("results", api_output_df, append=True)
 
   store.close()
 
   store.is_open
 
-store = pd.read_hdf("results.h5")
+store = pd.read_hdf(h5_out)
 
 print(store)
 
 if config["output_data"]["write_to_excel"] == True:
-  with pd.ExcelWriter(config["output_data"]["output_path"]) as writer:
+  with pd.ExcelWriter(excel_out) as writer:
       store.to_excel(writer)
