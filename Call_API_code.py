@@ -14,8 +14,8 @@ os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
 def load_config(yaml_path:str):
     
-  with open(yaml_path, 'r') as f:
-    return yaml.safe_load(f)
+    with open(yaml_path, 'r') as f:
+      return yaml.safe_load(f)
 
 config = load_config("config.yaml")
 
@@ -31,8 +31,8 @@ def make_data_path(direction: str, file_name: str, config=config):
   Returns:
       str: Relative path of the file to be read or written to
   """
-  dir_dict: {"in": config["input_data"]["input_folder"], 
-             "out": config["output_data"]["output_folder"]}
+  dir_dict = {"in": config["input_data"]["input_folder"], 
+              "out": config["output_data"]["output_folder"]}
   rel_path = os.path.join(dir_dict[direction], file_name)
   
   return rel_path
@@ -42,7 +42,7 @@ csv_name = config["input_data"]["input_file"]
 csv_in = make_data_path("in", csv_name)
 
 hd_name = config["output_data"]["h5_file"]
-h5_out = = make_data_path("out", hd_name)
+h5_out = make_data_path("out", hd_name)
 
 excel_name = config["output_data"]["output_file"]
 excel_out = make_data_path("out", excel_name)
@@ -97,7 +97,6 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
 locations_df = convert_coordinates(locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
 
 def create_locations_list(df_in):
-
   """
   Turns locations df into a list of locations with a dictionary of coordinates.
 
@@ -120,7 +119,6 @@ locations = create_locations_list(locations_df)
 
 
 def get_results_from_api(locs):
-
     """
     Calls the TravelTime API and returns the results in a dictionary.
 
@@ -134,7 +132,6 @@ def get_results_from_api(locs):
 
     Returns:
       dict: A dictionary of results.
-
     """
 
     departure = locs[0]["id"]
@@ -171,7 +168,8 @@ def get_results_from_api(locs):
 
     # Define empty results dictionary to store results
     res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
-            "Private_Travel_Duration": [], "API call time": []}
+            "Private_Travel_Duration": [], "API_call_time": [], "Location": [],
+            "Arrival_Time_Period": []}
     # number_of_arrival_locations = len(arrival_locations)
 
     public_refined_api_data = public_api_data["results"][0]["locations"]
@@ -211,7 +209,10 @@ if config["api_call_variables"]["call_api"] == True:
 if config["output_data"]["store_h5"] == True:
 
   store = pd.HDFStore(h5_out)
-  store.append("results", api_output_df, append=True)
+  try:
+    store.append("results", api_output_df, append=True)
+  except NameError as e:
+    print(f"The dataframe does not exist : {e}")
 
   store.close()
 
