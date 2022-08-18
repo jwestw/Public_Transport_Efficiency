@@ -13,7 +13,7 @@ os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
 def load_config(yaml_path:str):
-    
+
   with open(yaml_path, 'r') as f:
     return yaml.safe_load(f)
 
@@ -25,7 +25,7 @@ def clean_points_of_interest_df(df_in):
 
   # Select relevant columns
   df_clean = points_of_interest_df[["NAME", "FEATURE_EASTING", "FEATURE_NORTHING"]]
-  # Rename "NAME" column 
+  # Rename "NAME" column
   df_clean = df_clean.rename(columns={"NAME":"id"})
 
   return df_clean
@@ -40,10 +40,10 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
   geo_df = gpd.GeoDataFrame(df_in, geometry=geometry)
 
   geo_df.crs = "EPSG:27700"
-  
+
   geo_df.to_crs("EPSG:4326", inplace=True)
 
-  # Extract lng and lat coodinates into separate columns from POINT() column. 
+  # Extract lng and lat coodinates into separate columns from POINT() column.
   geo_df['lng'] = geo_df['geometry'].x
   geo_df['lat'] = geo_df['geometry'].y
 
@@ -61,8 +61,8 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
   pd_df.loc[mask, 'id'] += pd_df.groupby('id').cumcount().add(1).astype(str)
 
   # Drop na values - this occurs do to error in the original spreadsheet which needs fixing
-  pd_df = pd_df.dropna(axis=0) 
-                            
+  pd_df = pd_df.dropna(axis=0)
+
   return pd_df
 
 locations_df = convert_coordinates(locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
@@ -74,11 +74,11 @@ def create_locations_list(df_in):
 
   Args:
       df_in (pd.DataFrame): dataframe of locations and respective coordinates.
-        Should have column names "id", "lat", "lng" which correspond to the location name, 
+        Should have column names "id", "lat", "lng" which correspond to the location name,
         latitude and longnitude.
 
   Returns:
-      list: locations_list a list of locations within dictionaries ready for 
+      list: locations_list a list of locations within dictionaries ready for
         the get_results_from_api function.
   """
 
@@ -89,6 +89,14 @@ def create_locations_list(df_in):
 
 locations = create_locations_list(locations_df)
 
+def walking_time(meters = 500, speed = 5):
+  # To calculate time use formula time = distance / speed
+  speed_meters = speed * 1000
+  max_walk_time = (meters/speed_meters)*60*60
+
+  return max_walk_time
+
+max_walk_time = walking_time()
 
 def get_results_from_api(locs):
 
@@ -116,27 +124,29 @@ def get_results_from_api(locs):
 
     public_parameters = {
       "id": "arrive-at one-to-many search example",
-      "arrival_location_ids": arrival_locations,
-      "departure_location_id": departure,
+      "departure_location_ids": ['Newport Orthodontic Centre','Learning Disability Office'],
+      "arrival_location_id": departure,
       "transportation": {"type": "public_transport"},
-      "arrival_time_period": "weekday_morning",
+      "arrival_time": datetime.utcnow().isoformat(),
       "travel_time": 3600,
-      "properties": ["travel_time"]
+      "walking_time": max_walk_time,
+      "properties": ["travel_time", "distance_breakdown"]
       }
 
     private_parameters = {
     "id": "arrive-at one-to-many search example",
-    "arrival_location_ids": arrival_locations,
-    "departure_location_id": departure,
+    "departure_location_ids": ['Newport Orthodontic Centre','Learning Disability Office'],
+    "arrival_location_id": departure,
     "transportation": {"type": "driving"},
-    "arrival_time_period": config["api_call_variables"]["arrival_time_period"],
+    "arrival_time": datetime.utcnow().isoformat(),
     "travel_time": config["api_call_variables"]["travel_time"],
-    "properties": ["travel_time"]
+    "walking_time": max_walk_time,
+    "properties": ["travel_time", "distance_breakdown"]
     }
 
-    # Call the API 
-    public_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=public_parameters)
-    private_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=private_parameters)
+    # Call the API
+    public_api_data = ttpy.time_filter(locations=locs, arrival_searches=public_parameters)
+    private_api_data = ttpy.time_filter(locations=locs, arrival_searches=private_parameters)
 
     API_call_time = time.ctime()
 
@@ -158,7 +168,7 @@ def get_results_from_api(locs):
         res_dict["API_call_time"].append(API_call_time)
         res_dict["Location"].append(config["api_call_variables"]["city_name"])
         res_dict["Arrival_Time_Period"].append(config["api_call_variables"]["arrival_time_period"])
-    
+
     # Ensure public and private destination are the same.
     for index, destination_result in enumerate(private_refined_api_data):
           priv_destination = destination_result["id"]
