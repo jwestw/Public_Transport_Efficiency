@@ -2,7 +2,7 @@
 
 This project is currently being carried out by the Data Science Skills Team (DSST) within ONS.
 
-Members involved are [James Westwood](https://github.com/jwestw), [Chloe Murrell](https://github.com/chloemurrell) and [Antonio Felton](https://github.com/Antonio-John).
+Members involved are [James Westwood](https://github.com/jwestw), [Chloe Murrell](https://github.com/chloemurrell) and [Tom Penberthy](https://github.com/penbet).
 
 ## Overview
 A project to measure the efficiency of public transport systems in the UK.
