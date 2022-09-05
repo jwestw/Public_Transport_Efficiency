@@ -1,5 +1,6 @@
 input_data:
-  input_path: input_data/points-of-interest-newport-csv.csv
+  input_folder: input_data
+  input_file: points-of-interest-newport-csv.csv
 
 api_call_variables:
   call_api: True
@@ -8,7 +9,8 @@ api_call_variables:
   travel_time: 3600
 
 output_data:
+  output_folder: output_data
   h5_file: results.h5
-  output_path: output_data/results.xlsx
-  store_h5: False
-  write_to_excel: False
+  output_file: results.xlsx
+  store_h5: True
+  write_to_excel: True
