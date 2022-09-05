@@ -165,3 +165,10 @@ conda env export > environment.yml
 You will need to add/commit/push the changes to the environment yaml so they get pushed up to the repository and others can run your code. 
 
 If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
+
+### Using TravelTime API
+If you do not already have a TravelTime API account you will need to set one up [TravelTime API website](https://account.traveltime.com)
+
+Once you have an account you should be able to view your application ID and Key. These are unique to your account and monitor your usage of the API. As these should be kept private and not pushed to GitHub we have set up a .env file to store the details and call them into the relevant Python script. 
+
+Currently in the repository there is a .env.example file. You will need to create a new file called .env and copy the contents of the example file into the new one. You can then input your API ID and API Key in the respective locations. Any changes to this file will not occur in the changes log as the .env file has been added to gitignore. 
