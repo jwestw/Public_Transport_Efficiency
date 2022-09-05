@@ -167,7 +167,7 @@ You will need to add/commit/push the changes to the environment yaml so they get
 If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
 
 ### Using TravelTime API
-If you do not already have a TravelTime API account you will need to set one up [TravelTime API website](https://account.traveltime.com)
+If you do not already have a TravelTime API account you will need to set one up [TravelTime API website](https://account.traveltime.com).
 
 Once you have an account you should be able to view your application ID and Key. These are unique to your account and monitor your usage of the API. As these should be kept private and not pushed to GitHub we have set up a .env file to store the details and call them into the relevant Python script. 
 
