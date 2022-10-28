@@ -13,7 +13,7 @@ os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
 
 def load_config(yaml_path:str):
-    
+
     with open(yaml_path, 'r') as f:
       return yaml.safe_load(f)
 
@@ -31,10 +31,10 @@ def make_data_path(direction: str, file_name: str, config=config):
   Returns:
       str: Relative path of the file to be read or written to
   """
-  dir_dict = {"in": config["input_data"]["input_folder"], 
+  dir_dict = {"in": config["input_data"]["input_folder"],
               "out": config["output_data"]["output_folder"]}
   rel_path = os.path.join(dir_dict[direction], file_name)
-  
+
   return rel_path
 
 # Make paths
@@ -54,7 +54,7 @@ def clean_points_of_interest_df(df_in):
 
   # Select relevant columns
   df_clean = points_of_interest_df[["NAME", "FEATURE_EASTING", "FEATURE_NORTHING"]]
-  # Rename "NAME" column 
+  # Rename "NAME" column
   df_clean = df_clean.rename(columns={"NAME":"id"})
 
   return df_clean
@@ -69,10 +69,10 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
   geo_df = gpd.GeoDataFrame(df_in, geometry=geometry)
 
   geo_df.crs = "EPSG:27700"
-  
+
   geo_df.to_crs("EPSG:4326", inplace=True)
 
-  # Extract lng and lat coodinates into separate columns from POINT() column. 
+  # Extract lng and lat coodinates into separate columns from POINT() column.
   geo_df['lng'] = geo_df['geometry'].x
   geo_df['lat'] = geo_df['geometry'].y
 
@@ -90,8 +90,8 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
   pd_df.loc[mask, 'id'] += pd_df.groupby('id').cumcount().add(1).astype(str)
 
   # Drop na values - this occurs do to error in the original spreadsheet which needs fixing
-  pd_df = pd_df.dropna(axis=0) 
-                            
+  pd_df = pd_df.dropna(axis=0)
+
   return pd_df
 
 locations_df = convert_coordinates(locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
@@ -102,11 +102,11 @@ def create_locations_list(df_in):
 
   Args:
       df_in (pd.DataFrame): dataframe of locations and respective coordinates.
-        Should have column names "id", "lat", "lng" which correspond to the location name, 
+        Should have column names "id", "lat", "lng" which correspond to the location name,
         latitude and longnitude.
 
   Returns:
-      list: locations_list a list of locations within dictionaries ready for 
+      list: locations_list a list of locations within dictionaries ready for
         the get_results_from_api function.
   """
 
@@ -160,7 +160,7 @@ def get_results_from_api(locs):
     "properties": ["travel_time"]
     }
 
-    # Call the API 
+    # Call the API
     public_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=public_parameters)
     private_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=private_parameters)
 
@@ -170,6 +170,7 @@ def get_results_from_api(locs):
     res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
             "Private_Travel_Duration": [], "API_call_time": [], "Location": [],
             "Arrival_Time_Period": []}
+
     # number_of_arrival_locations = len(arrival_locations)
 
     public_refined_api_data = public_api_data["results"][0]["locations"]
@@ -185,7 +186,7 @@ def get_results_from_api(locs):
         res_dict["API_call_time"].append(API_call_time)
         res_dict["Location"].append(config["api_call_variables"]["city_name"])
         res_dict["Arrival_Time_Period"].append(config["api_call_variables"]["arrival_time_period"])
-    
+
     # Ensure public and private destination are the same.
     for index, destination_result in enumerate(private_refined_api_data):
           priv_destination = destination_result["id"]
