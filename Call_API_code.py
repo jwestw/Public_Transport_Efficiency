@@ -8,9 +8,11 @@ import yaml
 import traveltimepy as ttpy
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
-os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
-os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
+load_dotenv('.env')
+os.environ["TRAVELTIME_ID"] = os.getenv("TRAVELTIME_ID")
+os.environ["TRAVELTIME_KEY"] = os.getenv("TRAVELTIME_KEY")
 
 def load_config(yaml_path:str):
 
