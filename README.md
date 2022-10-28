@@ -162,6 +162,13 @@ To do so:
 ```
 conda env export > environment.yml
 ```
+Or for Linux
+```
+pip install git+https://github.com/traveltime-dev/traveltime-python-sdk
+conda env update --file environment.yml --name transp_eff_310
+
+```
+
 You will need to add/commit/push the changes to the environment yaml so they get pushed up to the repository and others can run your code. 
 
 If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
