@@ -9,12 +9,11 @@ import yaml
 import traveltimepy as ttpy
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
-os.environ["TRAVELTIME_ID"] = os.environ.get("TRAVELTIME_ID")
-os.environ["TRAVELTIME_KEY"] = os.environ.get("TRAVELTIME_KEY")
-
-print(os.environ["TRAVELTIME_ID"])
-print(os.environ["TRAVELTIME_KEY"])
+load_dotenv('.env')
+os.environ["TRAVELTIME_ID"] = os.getenv("TRAVELTIME_ID")
+os.environ["TRAVELTIME_KEY"] = os.getenv("TRAVELTIME_KEY")
 
 def load_config(yaml_path:str):
 
@@ -57,8 +56,6 @@ def walking_time(meters = 500, speed = 5):
 
 max_walk_time = walking_time()
 
-print("here")
-
 departure = taunton_locations[0]["id"]
 arrival_locations = [taunton_locations[index]["id"] for index in range(len(taunton_locations))
                       if taunton_locations[index]["id"] != departure]
@@ -87,13 +84,20 @@ private_parameters = {
 "properties": ["travel_time"]
 }
 
-print("parameters")
+walk_parameters = {
+"id": "arrive-at one-to-many search example",
+"departure_location_ids": arrival_locations,
+"arrival_location_id": departure,
+"transportation": {"type": "walking"},
+"arrival_time": datetime.utcnow().isoformat(),
+"travel_time": config["api_call_variables"]["travel_time"],
+"properties": ["travel_time"]
+}
 
 # Call the API
 public_api_data = ttpy.time_filter(locations=taunton_locations, arrival_searches=public_parameters)
 private_api_data = ttpy.time_filter(locations=taunton_locations, arrival_searches=private_parameters)
-
-print("call_api")
+walk_api_data = ttpy.time_filter(locations=taunton_locations, arrival_searches=walk_parameters)
 
 API_call_time = time.ctime()
 
@@ -104,23 +108,54 @@ res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [], "Locat
 
 public_refined_api_data = public_api_data["results"][0]["locations"]
 private_refined_api_data = private_api_data["results"][0]["locations"]
+walk_refined_api_data = walk_api_data["results"][0]["locations"]
 
-print("ok")
 
-# Loop through destination locations - store journey times into results dictionary.
-for destination_result in public_refined_api_data:
-    public_duration_result = destination_result["properties"][0]["travel_time"]
-    destination_name = destination_result["id"]
+# New code to consider unreachable locations
+res_dict = {"Start": [], "Destination": [], "Private_Travel_Duration": [], "Public_Travel_Duration": [], "Walk_Duration": []}
+
+for destination_result in private_refined_api_data:
     res_dict["Start"].append(departure)
+    destination_name = destination_result["id"]
     res_dict["Destination"].append(destination_name)
-    res_dict["Public_Travel_Duration"].append(public_duration_result)
-    res_dict["API_call_time"].append(API_call_time)
-    res_dict["Location"].append(config["api_call_variables"]["city_name"])
-    res_dict["Arrival_Time_Period"].append(config["api_call_variables"]["arrival_time_period"])
-    res_dict["distance_walk"].append(destination_result["properties"][0]["distance_breakdown"][0]["distance"])
+    private_duration_result = destination_result["properties"][0]["travel_time"]
+    res_dict["Private_Travel_Duration"].append(private_duration_result)
 
-print("done")
+COUNT = 0
+def increment():
+    global COUNT
+    COUNT += 1
 
+reachable = []
+for destination_result in walk_refined_api_data:
+    reachable.append(destination_result["id"])  
+
+for destination_result in res_dict["Destination"]:
+    if destination_result in reachable: 
+        res_dict["Walk_Duration"].append(walk_refined_api_data[COUNT]["properties"][0]["travel_time"])
+        increment()
+    else:
+        res_dict["Walk_Duration"].append("Unreachable")
+
+COUNT = 0
+def increment():
+    global COUNT
+    COUNT += 1
+
+reachable = []
+for destination_result in public_refined_api_data:
+    reachable.append(destination_result["id"])  
+
+for destination_result in res_dict["Destination"]:
+    if destination_result in reachable: 
+        res_dict["Public_Travel_Duration"].append(public_refined_api_data[COUNT]["properties"][0]["travel_time"])
+        increment()
+    else:
+        res_dict["Public_Travel_Duration"].append("Unreachable")
+
+final_df = pd.DataFrame(res_dict)
+
+# Do we still need this?
 # Ensure public and private destination are the same.
 for index, destination_result in enumerate(private_refined_api_data):
       priv_destination = destination_result["id"]
@@ -131,4 +166,4 @@ for index, destination_result in enumerate(private_refined_api_data):
       private_duration_result = destination_result["properties"][0]["travel_time"]
       res_dict["Private_Travel_Duration"].append(private_duration_result)
 
-api_output_df = get_results_from_api(taunton_locations=taunton_locations)
+print(final_df)
