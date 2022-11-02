@@ -119,56 +119,70 @@ def create_locations_list(df_in):
 
 locations = create_locations_list(locations_df)
 
+departure = locations[0]["id"]
 
-def get_results_from_api(locs):
-    """
-    Calls the TravelTime API and returns the results in a dictionary.
+arrival_locations = [locations[index]["id"] for index in range(len(locations))
+                      if locations[index]["id"] != departure]
 
-    Args:
-      locs (list): A list of dictionaries containing locations.
+# Define parameters in dictionary for API call
+
+public_parameters = {
+  "id": "arrive-at one-to-many search example",
+  "arrival_location_ids": arrival_locations,
+  "departure_location_id": departure,
+  "transportation": {"type": "public_transport"},
+  "arrival_time_period": "weekday_morning",
+  "travel_time": 3600,
+  "properties": ["travel_time"]
+  }
+
+private_parameters = {
+"id": "arrive-at one-to-many search example",
+"arrival_location_ids": arrival_locations,
+"departure_location_id": departure,
+"transportation": {"type": "driving"},
+"arrival_time_period": config["api_call_variables"]["arrival_time_period"],
+"travel_time": config["api_call_variables"]["travel_time"],
+"properties": ["travel_time"]
+}
+    
+def call_api (locs, parameters):
+  """
+  Call api to gain public and private travel times
+
+  Args: 
+    locs (list): A list of dictionaries containing locations.
         Must contain keys ["id", "coords"].
-      dep_search (dict): A dictionary of departure locations. Must contain keys
-        ["id", "departure_location_id", "arrival_location_ids",
-          "transportation","departure_time", "travel_time",
-                                      "properties", "range"]
+    parameters (dict): A dictionary of parameters for the api call
+    
+  Returns:
+    api_data (dict): A dictionary of public transport arrival locations and travel times
 
-    Returns:
-      dict: A dictionary of results.
-    """
-
-    departure = locs[0]["id"]
-    arrival_locations = [locs[index]["id"] for index in range(len(locs))
-                         if locs[index]["id"] != departure]
-
-    # Define parameters in dictionary for API call
-
-    public_parameters = {
-      "id": "arrive-at one-to-many search example",
-      "arrival_location_ids": arrival_locations,
-      "departure_location_id": departure,
-      "transportation": {"type": "public_transport"},
-      "arrival_time_period": "weekday_morning",
-      "travel_time": 3600,
-      "properties": ["travel_time"]
-      }
-
-    private_parameters = {
-    "id": "arrive-at one-to-many search example",
-    "arrival_location_ids": arrival_locations,
-    "departure_location_id": departure,
-    "transportation": {"type": "driving"},
-    "arrival_time_period": config["api_call_variables"]["arrival_time_period"],
-    "travel_time": config["api_call_variables"]["travel_time"],
-    "properties": ["travel_time"]
-    }
-
+  """
     # Call the API
-    public_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=public_parameters)
-    private_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=private_parameters)
-
+    api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=parameters)
+    
     API_call_time = time.ctime()
 
-    # Define empty results dictionary to store results
+    return api_data
+
+public_api_data = call_api(locations, public_parameters)
+private_api_data = call_api(locations, private_parameters)
+
+def process_api_data (public_api_data, private_api_data, API_call_time, departure):
+  """
+  Processes api data into a data frame
+
+  Args:
+    public_api_data (dict): A dictionary of public transport arrival locations and travel times
+    private_api_data (dict): A dictionary of private trasport arrival locations and travel times
+    API_call_time (str): Time of day that API was called
+    departure (str): ID departure location
+
+  Returns:
+    final_df (df): data frame of all public and private journey times
+  """
+  # Define empty results dictionary to store results
     res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
             "Private_Travel_Duration": [], "API_call_time": [], "Location": [],
             "Arrival_Time_Period": []}
@@ -199,7 +213,6 @@ def get_results_from_api(locs):
           res_dict["Private_Travel_Duration"].append(private_duration_result)
 
     final_df = pd.DataFrame(res_dict)
-
     return final_df
 
 if config["api_call_variables"]["call_api"] == True:
