@@ -2,7 +2,7 @@
 
 This project is currently being carried out by the Data Science Skills Team (DSST) within ONS.
 
-Members involved are [James Westwood](https://github.com/jwestw), [Chloe Murrell](https://github.com/chloemurrell) and [Antonio Felton](https://github.com/Antonio-John).
+Members involved are [James Westwood](https://github.com/jwestw), [Chloe Murrell](https://github.com/chloemurrell), [Antonio Felton](https://github.com/Antonio-John) and [Thomas Penberthy](https://github.com/penbet).
 
 ## Overview
 A project to measure the efficiency of public transport systems in the UK.
@@ -35,7 +35,7 @@ The aims of the project are:
 
 The transport efficiency project is an open source project that you can contribute to. We are looking for developers and those with domain knowledge (about transport, statistics, analysis etc) to contribute to the code and help us with our project. 
 
-To get developers set up, we have created this guide to make setting up your working environment easier. 
+To get developers set up, we have created this guide to make setting up your working environment easier. The instructions in this Readme apply broadly for all operating systems, however there are slight differences in code which have been noted in the relevant sections.
 
 ### Using VS Code 
 
