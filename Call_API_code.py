@@ -172,6 +172,7 @@ def get_results_from_api(locs):
     res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
             "Private_Travel_Duration": [], "API_call_time": [], "Location": [],
             "Arrival_Time_Period": []}
+
     # number_of_arrival_locations = len(arrival_locations)
 
     public_refined_api_data = public_api_data["results"][0]["locations"]
