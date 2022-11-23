@@ -1,12 +1,9 @@
-import requests
 import pandas as pd
-import time
 import geopandas as gpd
 from shapely.geometry import Point
 import yaml
 
 import traveltimepy as ttpy
-from datetime import datetime
 import os
 from dotenv import load_dotenv
 
@@ -159,17 +156,15 @@ def call_api (locs, parameters):
     api_data (dict): A dictionary of public transport arrival locations and travel times
 
   """
-    # Call the API
-    api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=parameters)
-    
-    API_call_time = time.ctime()
-
-    return api_data
+  # Call the API
+  api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=parameters)
+  
+  return api_data
 
 public_api_data = call_api(locations, public_parameters)
 private_api_data = call_api(locations, private_parameters)
 
-def process_api_data (public_api_data, private_api_data, API_call_time, departure):
+def process_api_data (public_api_data, private_api_data, departure):
   """
   Processes api data into a data frame
 
@@ -183,40 +178,39 @@ def process_api_data (public_api_data, private_api_data, API_call_time, departur
     final_df (df): data frame of all public and private journey times
   """
   # Define empty results dictionary to store results
-    res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
-            "Private_Travel_Duration": [], "API_call_time": [], "Location": [],
-            "Arrival_Time_Period": []}
-    # number_of_arrival_locations = len(arrival_locations)
+  res_dict = {"Start": [], "Destination": [], "Public_Travel_Duration": [],
+          "Private_Travel_Duration": [], "Location": [],
+          "Arrival_Time_Period": []}
+  # number_of_arrival_locations = len(arrival_locations)
 
-    public_refined_api_data = public_api_data["results"][0]["locations"]
-    private_refined_api_data = private_api_data["results"][0]["locations"]
+  public_refined_api_data = public_api_data["results"][0]["locations"]
+  private_refined_api_data = private_api_data["results"][0]["locations"]
 
-    # Loop through destination locations - store journey times into results dictionary.
-    for destination_result in public_refined_api_data:
-        public_duration_result = destination_result["properties"]["travel_time"]
-        destination_name = destination_result["id"]
-        res_dict["Start"].append(departure)
-        res_dict["Destination"].append(destination_name)
-        res_dict["Public_Travel_Duration"].append(public_duration_result)
-        res_dict["API_call_time"].append(API_call_time)
-        res_dict["Location"].append(config["api_call_variables"]["city_name"])
-        res_dict["Arrival_Time_Period"].append(config["api_call_variables"]["arrival_time_period"])
+  # Loop through destination locations - store journey times into results dictionary.
+  for destination_result in public_refined_api_data:
+      public_duration_result = destination_result["properties"]["travel_time"]
+      destination_name = destination_result["id"]
+      res_dict["Start"].append(departure)
+      res_dict["Destination"].append(destination_name)
+      res_dict["Public_Travel_Duration"].append(public_duration_result)
+      res_dict["Location"].append(config["api_call_variables"]["city_name"])
+      res_dict["Arrival_Time_Period"].append(config["api_call_variables"]["arrival_time_period"])
 
-    # Ensure public and private destination are the same.
-    for index, destination_result in enumerate(private_refined_api_data):
-          priv_destination = destination_result["id"]
-          pub_dest_same_index = res_dict["Destination"][index]
-          if priv_destination != pub_dest_same_index:
-                print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
-                raise
-          private_duration_result = destination_result["properties"]["travel_time"]
-          res_dict["Private_Travel_Duration"].append(private_duration_result)
+  # Ensure public and private destination are the same.
+  for index, destination_result in enumerate(private_refined_api_data):
+        priv_destination = destination_result["id"]
+        pub_dest_same_index = res_dict["Destination"][index]
+        if priv_destination != pub_dest_same_index:
+              print(f"Public destination: {res_dict['Destination'][index]}, Private Destination: {destination_result['id']}")
+              raise
+        private_duration_result = destination_result["properties"]["travel_time"]
+        res_dict["Private_Travel_Duration"].append(private_duration_result)
 
-    final_df = pd.DataFrame(res_dict)
-    return final_df
+  final_df = pd.DataFrame(res_dict)
+  return final_df
 
 if config["api_call_variables"]["call_api"] == True:
-  api_output_df = get_results_from_api(locs=locations)
+  api_output_df = process_api_data(public_api_data, private_api_data, departure)
 
   print(api_output_df)
 
