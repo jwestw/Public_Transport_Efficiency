@@ -9,19 +9,28 @@ from Call_API_code import locations
 from itertools import combinations
 import random 
 
-#create random sample of locations, 25 locations to give 625 journeys between each point
-locations_samp = random.sample(locations, 25)
+#Create list of 8 departure locations.
+departure_id = ['Brittania Food Stores', 'Sweetland Associates Ltd', 'Community House', 'Radcraft Newport', 'Bus Stop (Highcroft Road Top)',
+                    'Baneswell Housing Association', 'Friars Walk 1', 'Purnells2']
+#changeable based on how many departure IDs we want to run, fewer means fewer API requests
+departure_id = departure_id[0:2]
 
-#Create all point to point journeys from 25 random locations
-a_to_b_journeys = combinations(locations_samp, 2)
+#Selecting location IDs based selection in departure ID
+for dep_name in departure_id:
+    for departure_loc in locations:
+        if dep_name == departure_loc['id']:
+            print(departure_loc['id'], departure_loc['coords'])
+
+#create random sample of locations, 200 locations, change number of locations based on how many journeys we want to make, remember about limited number fo API calls.
+arrival_locs = random.sample(locations, 200)
 
 #Call API to get A to B journey times
-def get_results_from_api(journeys):
+def get_results_from_api(locs):
     """
     Calls the TravelTime API and returns the results in a dictionary.
 
     Args:
-      journeys (list): A list of tuples containing journeys from A to B.
+      locs (list): A list of dictionaries containing locations.
         Must contain keys ["id", "coords"].
       dep_search (dict): A dictionary of departure locations. Must contain keys
         ["id", "departure_location_id", "arrival_location_ids",
@@ -31,16 +40,17 @@ def get_results_from_api(journeys):
     Returns:
       dict: A dictionary of results.
     """
-    #departure and arrival need to be first and second respectively in the list of tuples
-    departure_loc = journeys[0]["id"]
-    arrival_loc = journeys[1]["id"]
+
+    departure = locs[0]["id"]
+    arrival_locations = [locs[index]["id"] for index in range(len(locs))
+                         if locs[index]["id"] != departure]
 
     # Define parameters in dictionary for API call
 
     public_parameters = {
       "id": "arrive-at one-to-many search example",
-      "arrival_location_ids": arrival_loc,
-      "departure_location_id": departure_loc,
+      "arrival_location_ids": arrival_locations,
+      "departure_location_id": departure,
       "transportation": {"type": "public_transport"},
       "arrival_time_period": "weekday_morning",
       "travel_time": 3600,
@@ -49,17 +59,17 @@ def get_results_from_api(journeys):
 
     private_parameters = {
     "id": "arrive-at one-to-many search example",
-    "arrival_location_ids": arrival_loc,
-    "departure_location_id": departure_loc,
+    "arrival_location_ids": arrival_locations,
+    "departure_location_id": departure,
     "transportation": {"type": "driving"},
     "arrival_time_period": config["api_call_variables"]["arrival_time_period"],
     "travel_time": config["api_call_variables"]["travel_time"],
     "properties": ["travel_time"]
     }
 
-    # Call the API - need to change one_to_many to matrix?
-    public_api_data = ttpy.time_filter_fast(a_to_b_journeys=journeys, arrival_one_to_many=public_parameters)
-    private_api_data = ttpy.time_filter_fast(a_to_b_journeys=journeys, arrival_one_to_many=private_parameters)
+    # Call the API
+    public_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=public_parameters)
+    private_api_data = ttpy.time_filter_fast(locations=locs, arrival_one_to_many=private_parameters)
 
     API_call_time = time.ctime()
 
@@ -96,5 +106,3 @@ def get_results_from_api(journeys):
     final_df = pd.DataFrame(res_dict)
 
     return final_df
-
-
