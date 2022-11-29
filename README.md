@@ -4,6 +4,7 @@ This project is currently being carried out by the Data Science Skills Team (DSS
 
 Members involved are [James Westwood](https://github.com/jwestw), [Chloe Murrell](https://github.com/chloemurrell) and [Tom Penberthy](https://github.com/penbet).
 
+
 ## Overview
 A project to measure the efficiency of public transport systems in the UK.
 
@@ -35,7 +36,7 @@ The aims of the project are:
 
 The transport efficiency project is an open source project that you can contribute to. We are looking for developers and those with domain knowledge (about transport, statistics, analysis etc) to contribute to the code and help us with our project. 
 
-To get developers set up, we have created this guide to make setting up your working environment easier. 
+To get developers set up, we have created this guide to make setting up your working environment easier. The instructions in this Readme apply broadly for all operating systems, however there are slight differences in code which have been noted in the relevant sections.
 
 ### Using VS Code 
 
@@ -162,6 +163,20 @@ To do so:
 ```
 conda env export > environment.yml
 ```
+Or for Linux
+```
+pip install git+https://github.com/traveltime-dev/traveltime-python-sdk
+conda env update --file environment.yml --name transp_eff_310
+
+```
+
 You will need to add/commit/push the changes to the environment yaml so they get pushed up to the repository and others can run your code. 
 
 If the installation of additional libraries are needed to run your code, you may want to note this in the notes or comments of the Pull Request.
+
+### Using TravelTime API
+If you do not already have a TravelTime API account you will need to set one up [TravelTime API website](https://account.traveltime.com).
+
+Once you have an account you should be able to view your application ID and Key. These are unique to your account and monitor your usage of the API. As these should be kept private and not pushed to GitHub we have set up a .env file to store the details and call them into the relevant Python script. 
+
+Currently in the repository there is a .env.example file. You will need to create a new file called .env and copy the contents of the example file into the new one. You can then input your API ID and API Key in the respective locations. Any changes to this file will not occur in the changes log as the .env file has been added to gitignore. 
