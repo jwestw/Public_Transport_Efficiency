@@ -7,28 +7,21 @@ import traveltimepy as ttpy
 import os
 from dotenv import load_dotenv
 
-# local imports
+# local module imports
 import utility as ut
 import geospatial as gs
 import data_transform as dt
 import data_ingest as di
 import data_cleaning as dc
-import data_output as dout
+import modules.data_output as dout
 
 
 load_dotenv('.env')
 os.environ["TRAVELTIME_ID"] = os.getenv("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.getenv("TRAVELTIME_KEY")
 
-
-def load_config(yaml_path: str):
-
-    with open(yaml_path, 'r') as f:
-        return yaml.safe_load(f)
-
-
-config = load_config("config.yaml")
-
+# Load config file as a dict
+config = ut.Config("config.yaml").load_config()
 
 # Make paths
 csv_name = config["input_data"]["input_file"]

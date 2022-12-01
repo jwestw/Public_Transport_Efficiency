@@ -1,4 +1,9 @@
-def make_data_path(direction: str, file_name: str, config=config):
+import yaml
+
+# local module imports
+import utility as ut
+
+def make_data_path(direction: str, file_name: str, config: dict) -> str:
     """Creates the path for the data files to be read or written from.
 
     Args:
@@ -14,3 +19,17 @@ def make_data_path(direction: str, file_name: str, config=config):
     rel_path = os.path.join(dir_dict[direction], file_name)
 
     return rel_path
+
+
+class Config():
+    """Class to hold the config file as a dict"""
+    def __init__(self, config_path: str):
+        self.config_path = config_path
+
+    def load_config(self):
+        """Loads the config file as a dict"""
+        with open(self.config_path, 'r') as f:
+            return yaml.safe_load(f)
+
+# Load config file as a dict
+config = Config("config.yaml").load_config()
