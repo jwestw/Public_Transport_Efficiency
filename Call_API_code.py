@@ -116,6 +116,15 @@ def create_locations_list(df_in):
 
 locations = create_locations_list(locations_df)
 
+def walking_time(meters = 500, speed = 5):
+  # To calculate time use formula time = distance / speed
+  speed_meters = speed * 1000
+  max_walk_time = (meters/speed_meters)*60*60
+
+  return max_walk_time
+
+max_walk_time = walking_time()
+
 departure = locations[0]["id"]
 
 arrival_locations = [locations[index]["id"] for index in range(len(locations))

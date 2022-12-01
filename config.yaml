@@ -14,4 +14,3 @@ output_data:
   output_file: results.xlsx
   store_h5: True
   write_to_excel: True
-
