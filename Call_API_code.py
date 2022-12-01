@@ -7,6 +7,10 @@ import traveltimepy as ttpy
 import os
 from dotenv import load_dotenv
 
+# local imports
+import utility as ut
+
+
 load_dotenv('.env')
 os.environ["TRAVELTIME_ID"] = os.getenv("TRAVELTIME_ID")
 os.environ["TRAVELTIME_KEY"] = os.getenv("TRAVELTIME_KEY")
@@ -19,16 +23,15 @@ def load_config(yaml_path:str):
 config = load_config("config.yaml")
 
 
-
 # Make paths
 csv_name = config["input_data"]["input_file"]
-csv_in = make_data_path("in", csv_name)
+csv_in = ut.make_data_path("in", csv_name)
 
 hd_name = config["output_data"]["h5_file"]
-h5_out = make_data_path("out", hd_name)
+h5_out = ut.make_data_path("out", hd_name)
 
 excel_name = config["output_data"]["output_file"]
-excel_out = make_data_path("out", excel_name)
+excel_out = ut.make_data_path("out", excel_name)
 
 # Read in locations data
 points_of_interest_df = pd.read_csv(csv_in, delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
