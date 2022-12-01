@@ -11,6 +11,7 @@ def writeh5(df, out_path):
     store.close()
     store.is_open
 
-def write_excel(df, out_path)
-with pd.ExcelWriter(out_path) as writer:
+
+def write_excel(df, out_path):
+    with pd.ExcelWriter(out_path) as writer:
         df.to_excel(writer)
