@@ -1,5 +1,5 @@
 import pandas as pd
-from utility import config
+from modules.utility import config
 
 def create_locations_list(df_in):
     """
