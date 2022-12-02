@@ -8,6 +8,12 @@ api_call_variables:
   arrival_time_period: weekday_morning
   travel_time: 3600
 
+data_vis:
+  plot_data: True
+  city_centre: 
+    "lat": 51.586106
+    "lon": -2.991391
+
 output_data:
   output_folder: output_data
   h5_file: results.h5

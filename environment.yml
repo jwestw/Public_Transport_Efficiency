@@ -147,6 +147,8 @@ dependencies:
   - pillow=9.2.0=py310he619898_0
   - pip=21.2.4=py310h06a4308_0
   - pixman=0.40.0=h36c2ea0_0
+  - plotly
+  - plotly_express
   - poppler=22.04.0=h1434ded_1
   - poppler-data=0.4.11=hd8ed1ab_0
   - postgresql=14.4=ha7cec9f_0
@@ -154,6 +156,7 @@ dependencies:
   - prompt-toolkit=3.0.27=pyha770c72_0
   - psutil=5.8.0=py310h7f8727e_1
   - pthread-stubs=0.4=h36c2ea0_1001
+  - python-dotenv
   - ptyprocess=0.7.0=pyhd3deb0d_0
   - pure_eval=0.2.2=pyhd8ed1ab_0
   - pycparser=2.21=pyhd3eb1b0_0
