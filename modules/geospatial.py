@@ -27,8 +27,8 @@ def convert_coordinates(df_in, coord_col_1, coord_col_2):
     pd_df = pd_df.rename(columns={"lon": "lng"})
 
     # Add number to end of duplicate id  values
-    mask = pd_df['id'].duplicated()
-    pd_df.loc[mask, 'id'] += pd_df.groupby('id').cumcount().add(1).astype(str)
+    # mask = pd_df['id'].duplicated()
+    # pd_df.loc[mask, 'id'] += pd_df.groupby('id').cumcount().add(1).astype(str)
 
     # Drop na values - this occurs do to error in the original spreadsheet which needs fixing
     pd_df = pd_df.dropna(axis=0)
