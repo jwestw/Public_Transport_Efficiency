@@ -147,6 +147,8 @@ dependencies:
   - pillow=9.2.0=py310he619898_0
   - pip=21.2.4=py310h06a4308_0
   - pixman=0.40.0=h36c2ea0_0
+  - plotly
+  - plotly_express
   - poppler=22.04.0=h1434ded_1
   - poppler-data=0.4.11=hd8ed1ab_0
   - postgresql=14.4=ha7cec9f_0
