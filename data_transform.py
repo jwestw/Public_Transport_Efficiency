@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 def create_locations_list(df_in):
     """
     Turns locations df into a list of locations with a dictionary of coordinates.
@@ -18,7 +21,7 @@ def create_locations_list(df_in):
     return locations_list
 
 
-def process_api_data(public_api_data, private_api_data, departure):
+def process_api_data(public_api_data, private_api_data, departure, config):
     """
     Processes api data into a data frame
 

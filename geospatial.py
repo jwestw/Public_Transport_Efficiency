@@ -1,3 +1,7 @@
+from shapely.geometry import Point
+import geopandas as gpd
+import pandas as pd
+
 def convert_coordinates(df_in, coord_col_1, coord_col_2):
 
     # Convert northing and easting -> longnitude and latitude

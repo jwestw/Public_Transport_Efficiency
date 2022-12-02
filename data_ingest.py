@@ -1,3 +1,6 @@
+import traveltimepy as ttpy
+
+
 def call_api(locs, parameters):
     """
     Call api to gain public and private travel times
