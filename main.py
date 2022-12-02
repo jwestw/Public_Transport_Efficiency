@@ -1,16 +1,16 @@
 import pandas as pd
 import yaml
-
-
 import os
 from dotenv import load_dotenv
 
 # local module imports
-import utility as ut
-import geospatial as gs
-import data_transform as dt
-import data_ingest as di
-import data_cleaning as dc
+import modules.utility as ut
+from modules.utility import config
+import modules.geospatial as gs
+import modules.data_transform as dt
+import modules.data_ingest as di
+import modules.data_cleaning as dc
+import modules.data_vis as dv
 import modules.data_output as dout
 
    
@@ -18,9 +18,6 @@ def main():
     load_dotenv('.env')
     os.environ["TRAVELTIME_ID"] = os.getenv("TRAVELTIME_ID")
     os.environ["TRAVELTIME_KEY"] = os.getenv("TRAVELTIME_KEY")
-
-    # Load config file as a dict
-    config = ut.Config("config.yaml").load_config()
 
     # Make paths
     csv_name = config["input_data"]["input_file"]
@@ -75,7 +72,6 @@ def main():
         "properties": ["travel_time"]
     }
 
-
     if config["api_call_variables"]["call_api"]:
         # Call the API to get the travel times
         public_api_data = di.call_api(locations, public_parameters)
@@ -83,7 +79,12 @@ def main():
         # Process the api data into a dataframe
         api_output_df = dt.process_api_data(public_api_data, private_api_data, departure, config)
         print(api_output_df)
-
+   
+    if config["data_vis"]["plot_data"]:
+        # Convert easting and northing in points of interest 
+        points_of_interest_df = gs.convert_coordinates(points_of_interest_df, "FEATURE_EASTING", "FEATURE_NORTHING")
+        dv.plot_map(points_of_interest_df, city_centre= config["data_vis"]["city_centre"])
+        
     # Rename df
     stored_df = api_output_df
 
