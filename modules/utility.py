@@ -1,10 +1,24 @@
 import yaml
 import os
 
-# local module imports
+
+class Config():
+    """Class to hold the config file as a dict"""
+    def __init__(self, config_path: str):
+        self.config_path = config_path
+
+    def load_config(self):
+        """Loads the config file as a dict"""
+        with open(self.config_path, 'r') as f:
+            return yaml.safe_load(f)
 
 
-def make_data_path(direction: str, file_name: str, config: dict) -> str:
+# Load config file as a dict. 
+# This is used in make_data_path, main.py and other modules
+config = Config("config.yaml").load_config()
+
+
+def make_data_path(direction: str, file_name: str, config: dict = config) -> str:
     """Creates the path for the data files to be read or written from.
 
     Args:
@@ -22,16 +36,4 @@ def make_data_path(direction: str, file_name: str, config: dict) -> str:
     return rel_path
 
 
-class Config():
-    """Class to hold the config file as a dict"""
-    def __init__(self, config_path: str):
-        self.config_path = config_path
 
-    def load_config(self):
-        """Loads the config file as a dict"""
-        with open(self.config_path, 'r') as f:
-            return yaml.safe_load(f)
-
-
-# Load config file as a dict
-config = Config("config.yaml").load_config()

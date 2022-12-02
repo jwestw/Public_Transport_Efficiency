@@ -1,5 +1,5 @@
 import pandas as pd
-
+from utility import config
 
 def create_locations_list(df_in):
     """
@@ -21,7 +21,7 @@ def create_locations_list(df_in):
     return locations_list
 
 
-def process_api_data(public_api_data, private_api_data, departure, config):
+def process_api_data(public_api_data, private_api_data, departure, config=config):
     """
     Processes api data into a data frame
 
