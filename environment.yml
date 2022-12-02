@@ -154,6 +154,7 @@ dependencies:
   - prompt-toolkit=3.0.27=pyha770c72_0
   - psutil=5.8.0=py310h7f8727e_1
   - pthread-stubs=0.4=h36c2ea0_1001
+  - python-dotenv
   - ptyprocess=0.7.0=pyhd3deb0d_0
   - pure_eval=0.2.2=pyhd8ed1ab_0
   - pycparser=2.21=pyhd3eb1b0_0
