@@ -5,33 +5,162 @@
  # We should look at some kind of route optimisation (manual at this stage). People are unlikely to make time-wasting journeys
  # The journeys should be similar in distance in the datasets
 
-from Call_API_code import locations
+#from Call_API_code import locations
 from itertools import combinations
 import random 
 
+import requests
+import pandas as pd
+import time
+import geopandas as gpd
+from shapely.geometry import Point
+import yaml
+
+import traveltimepy as ttpy
+from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv('.env')
+os.environ["TRAVELTIME_ID"] = os.getenv("TRAVELTIME_ID")
+os.environ["TRAVELTIME_KEY"] = os.getenv("TRAVELTIME_KEY")
+
+def load_config(yaml_path:str):
+
+    with open(yaml_path, 'r') as f:
+      return yaml.safe_load(f)
+
+config = load_config("config.yaml")
+
+
+def make_data_path(direction: str, file_name: str, config=config):
+  """Creates the path for the data files to be read or written from.
+
+  Args:
+      direction (str): Either in or out
+      file_name (str): Name of the file to be read or written to
+      config (dict): Dict derived from the config file
+
+  Returns:
+      str: Relative path of the file to be read or written to
+  """
+  dir_dict = {"in": config["input_data"]["input_folder"],
+              "out": config["output_data"]["output_folder"]}
+  rel_path = os.path.join(dir_dict[direction], file_name)
+
+  return rel_path
+
+# Make paths
+csv_name = config["input_data"]["input_file"]
+csv_in = make_data_path("in", csv_name)
+
+hd_name = config["output_data"]["h5_file"]
+h5_out = make_data_path("out", hd_name)
+
+excel_name = config["output_data"]["output_file"]
+excel_out = make_data_path("out", excel_name)
+
+# Read in locations data
+points_of_interest_df = pd.read_csv(csv_in, delimiter="|", dtype={"POINTX_CLASSIFICATION_CODE":str})
+
+def clean_points_of_interest_df(df_in):
+
+  # Select relevant columns
+  df_clean = points_of_interest_df[["NAME", "FEATURE_EASTING", "FEATURE_NORTHING"]]
+  # Rename "NAME" column
+  df_clean = df_clean.rename(columns={"NAME":"id"})
+
+  return df_clean
+
+locations_df = clean_points_of_interest_df(points_of_interest_df)
+
+def convert_coordinates(df_in, coord_col_1, coord_col_2):
+
+  # Convert northing and easting -> longnitude and latitude
+  geometry = [Point(xy) for xy in zip(df_in[coord_col_1], df_in[coord_col_2])]
+
+  geo_df = gpd.GeoDataFrame(df_in, geometry=geometry)
+
+  geo_df.crs = "EPSG:27700"
+
+  geo_df.to_crs("EPSG:4326", inplace=True)
+
+  # Extract lng and lat coodinates into separate columns from POINT() column.
+  geo_df['lng'] = geo_df['geometry'].x
+  geo_df['lat'] = geo_df['geometry'].y
+
+  # Convert to pandas df
+  pd_df = pd.DataFrame(df_in)
+
+  # Drop unnecessary columns
+  pd_df = pd_df.drop([coord_col_1, coord_col_2, "geometry"], axis=1)
+
+  # Rename longnitude column in line with API requirements - delete
+  pd_df = pd_df.rename(columns={"lon":"lng"})
+
+  # Add number to end of duplicate id  values
+  mask = pd_df['id'].duplicated()
+  pd_df.loc[mask, 'id'] += pd_df.groupby('id').cumcount().add(1).astype(str)
+
+  # Drop na values - this occurs do to error in the original spreadsheet which needs fixing
+  pd_df = pd_df.dropna(axis=0)
+
+  return pd_df
+
+locations_df = convert_coordinates(locations_df, "FEATURE_EASTING", "FEATURE_NORTHING")
+
+def create_locations_list(df_in):
+  """
+  Turns locations df into a list of locations with a dictionary of coordinates.
+
+  Args:
+      df_in (pd.DataFrame): dataframe of locations and respective coordinates.
+        Should have column names "id", "lat", "lng" which correspond to the location name,
+        latitude and longnitude.
+
+  Returns:
+      list: locations_list a list of locations within dictionaries ready for
+        the get_results_from_api function.
+  """
+
+  df = pd.DataFrame({"id":df_in["id"], "coords": df_in[["lat", "lng"]].to_dict("records")})
+  locations_list = df.to_dict('records')
+
+  return locations_list
+
+locations = create_locations_list(locations_df)
+
 #Create list of 8 departure locations.
-departure_id = ['Brittania Food Stores', 'Sweetland Associates Ltd', 'Community House', 'Radcraft Newport', 'Bus Stop (Highcroft Road Top)',
-                    'Baneswell Housing Association', 'Friars Walk 1', 'Purnells2']
+departure_id = ['Brittania Food Stores', 'Sweetland Associates Ltd', 'Community House', 'Radcraft Newport', 
+                'Bus Stop (Highcroft Road Top)', 'Baneswell Housing Association', 'Friars Walk 1', 'Purnells2']
 #changeable based on how many departure IDs we want to run, fewer means fewer API requests
 departure_id = departure_id[0:2]
 
-#Selecting location IDs based selection in departure ID
+#Create a list of dictionaries using depature IDs as the key and coorodinates as the value
+#Dictionary should look like this: [{'id': 'Location 1', 'coords'{"lat":5.00, "lng":0.200}}...]
+#departure_locs (list): A list of dictionaries containing locations.
+#Must contain keys ["id", "coords"].
+residential_dep_locs = list()
+
+#Cycling through departure names defined in departure_id list
 for dep_name in departure_id:
-    for departure_loc in locations:
-        if dep_name == departure_loc['id']:
-            print(departure_loc['id'], departure_loc['coords'])
+  #Cycling through dictionaries in the locations list, dictionaries containing coordinates for each location
+  for departure_locs in locations:
+    #Checing if each deparature name matches in depature_locs
+    if dep_name == departure_locs['id']:
+        #adding dictionary with matching lcoation name to residential departure list
+        residential_dep_locs.append({'id': departure_locs['id'], 'coords':departure_locs['coords']})
 
-#create random sample of locations, 200 locations, change number of locations based on how many journeys we want to make, remember about limited number fo API calls.
-arrival_locs = random.sample(locations, 200)
-
-#Call API to get A to B journey times
-def get_results_from_api(locs):
+#Call API to get A to B journey times, additional parameter whether we choose a departure location or not
+def get_results_from_api(locs, choose_dep_loc = True):
     """
     Calls the TravelTime API and returns the results in a dictionary.
 
-    Args:
+    Args: 
       locs (list): A list of dictionaries containing locations.
         Must contain keys ["id", "coords"].
+      choose_dep_loc (parameter): Parameter to select whether we are able to choose different departure locations,
+        rather than a generic start location (i.e. first item in the list of locations).
       dep_search (dict): A dictionary of departure locations. Must contain keys
         ["id", "departure_location_id", "arrival_location_ids",
           "transportation","departure_time", "travel_time",
@@ -40,8 +169,13 @@ def get_results_from_api(locs):
     Returns:
       dict: A dictionary of results.
     """
-
-    departure = locs[0]["id"]
+    # if statement to say what to do if we are selecting departure locations or not
+    if choose_dep_loc:
+      #choose_dep_loc = True so we select departure locs from residential_dep_locs
+      departure = residential_dep_locs[0]["id"]
+    #otherwise select depature location as first in locations list
+    else:
+      departure = locs[0]["id"]
     arrival_locations = [locs[index]["id"] for index in range(len(locs))
                          if locs[index]["id"] != departure]
 
@@ -106,3 +240,29 @@ def get_results_from_api(locs):
     final_df = pd.DataFrame(res_dict)
 
     return final_df
+
+if config["api_call_variables"]["call_api"] == True:
+  api_output_df = get_results_from_api(locs=locations)
+
+  print(api_output_df)
+
+
+if config["output_data"]["store_h5"] == True:
+
+  store = pd.HDFStore(h5_out)
+  try:
+    store.append("results", api_output_df, append=True)
+  except NameError as e:
+    print(f"The dataframe does not exist : {e}")
+
+  store.close()
+
+  store.is_open
+
+store = pd.read_hdf(h5_out)
+
+print(store)
+
+if config["output_data"]["write_to_excel"] == True:
+  with pd.ExcelWriter(excel_out) as writer:
+      store.to_excel(writer)
