@@ -131,10 +131,10 @@ def create_locations_list(df_in):
 locations = create_locations_list(locations_df)
 
 #Create list of 8 departure locations.
-departure_id = ['Brittania Food Stores', 'Sweetland Associates Ltd', 'Community House', 'Radcraft Newport', 
+res_departure_id = ['Brittania Food Stores', 'Sweetland Associates Ltd', 'Community House', 'Radcraft Newport', 
                 'Bus Stop (Highcroft Road Top)', 'Baneswell Housing Association', 'Friars Walk 1', 'Purnells2']
 #changeable based on how many departure IDs we want to run, fewer means fewer API requests
-departure_id = departure_id[0:2]
+res_departure_id = res_departure_id[0:2]
 
 #Create a list of dictionaries using depature IDs as the key and coorodinates as the value
 #Dictionary should look like this: [{'id': 'Location 1', 'coords'{"lat":5.00, "lng":0.200}}...]
@@ -143,7 +143,7 @@ departure_id = departure_id[0:2]
 residential_dep_locs = list()
 
 #Cycling through departure names defined in departure_id list
-for dep_name in departure_id:
+for dep_name in res_departure_id:
   #Cycling through dictionaries in the locations list, dictionaries containing coordinates for each location
   for departure_locs in locations:
     #Checing if each deparature name matches in depature_locs
@@ -151,8 +151,11 @@ for dep_name in departure_id:
         #adding dictionary with matching lcoation name to residential departure list
         residential_dep_locs.append({'id': departure_locs['id'], 'coords':departure_locs['coords']})
 
+for res_loc in residential_dep_locs:
+  print (res_loc)
+
 #Call API to get A to B journey times, additional parameter whether we choose a departure location or not
-def get_results_from_api(locs, choose_dep_loc = True):
+def get_results_from_api(departure_location, locs):
     """
     Calls the TravelTime API and returns the results in a dictionary.
 
@@ -167,24 +170,20 @@ def get_results_from_api(locs, choose_dep_loc = True):
                                       "properties", "range"]
 
     Returns:
-      dict: A dictionary of results.
+      dep_matrix: A matrix of results.
     """
-    # if statement to say what to do if we are selecting departure locations or not
-    if choose_dep_loc:
-      #choose_dep_loc = True so we select departure locs from residential_dep_locs
-      departure = residential_dep_locs[0]["id"]
-    #otherwise select depature location as first in locations list
-    else:
-      departure = locs[0]["id"]
+    
+
+
     arrival_locations = [locs[index]["id"] for index in range(len(locs))
-                         if locs[index]["id"] != departure]
+                         if locs[index]["id"] != departure_location]
 
     # Define parameters in dictionary for API call
 
     public_parameters = {
       "id": "arrive-at one-to-many search example",
       "arrival_location_ids": arrival_locations,
-      "departure_location_id": departure,
+      "departure_location_id": departure_location,
       "transportation": {"type": "public_transport"},
       "arrival_time_period": "weekday_morning",
       "travel_time": 3600,
@@ -194,7 +193,7 @@ def get_results_from_api(locs, choose_dep_loc = True):
     private_parameters = {
     "id": "arrive-at one-to-many search example",
     "arrival_location_ids": arrival_locations,
-    "departure_location_id": departure,
+    "departure_location_id": departure_location,
     "transportation": {"type": "driving"},
     "arrival_time_period": config["api_call_variables"]["arrival_time_period"],
     "travel_time": config["api_call_variables"]["travel_time"],
@@ -220,7 +219,7 @@ def get_results_from_api(locs, choose_dep_loc = True):
     for destination_result in public_refined_api_data:
         public_duration_result = destination_result["properties"]["travel_time"]
         destination_name = destination_result["id"]
-        res_dict["Start"].append(departure)
+        res_dict["Start"].append(departure_location)
         res_dict["Destination"].append(destination_name)
         res_dict["Public_Travel_Duration"].append(public_duration_result)
         res_dict["API_call_time"].append(API_call_time)
@@ -241,28 +240,41 @@ def get_results_from_api(locs, choose_dep_loc = True):
 
     return final_df
 
+choose_dep_loc = True
+
 if config["api_call_variables"]["call_api"] == True:
-  api_output_df = get_results_from_api(locs=locations)
+  #for loop to iterate through departure locations
+    for res_dep_dict in residential_dep_locs:
+      # if statement to say what to do if we are selecting departure locations or not
+      if choose_dep_loc:
+      #choose_dep_loc = True so we select departure locs from residential_dep_locs
+        departure_location = res_dep_dict["id"]
 
-  print(api_output_df)
+        api_output_df = get_results_from_api(departure_location, locs=locations)
+      #otherwise select depature location as first in locations list
+      else:
+        departure_location = locs[0]["id"]
+        api_output_df = get_results_from_api(departure_location, locs=locations)
+    
+print(api_output_df)
 
 
-if config["output_data"]["store_h5"] == True:
+#if config["output_data"]["store_h5"] == True:
 
-  store = pd.HDFStore(h5_out)
-  try:
-    store.append("results", api_output_df, append=True)
-  except NameError as e:
-    print(f"The dataframe does not exist : {e}")
+  #store = pd.HDFStore(h5_out)
+  #try:
+    #store.append("results", api_output_df, append=True)
+  #except NameError as e:
+    #print(f"The dataframe does not exist : {e}")
 
-  store.close()
+  #store.close()
 
-  store.is_open
+  #store.is_open
 
-store = pd.read_hdf(h5_out)
+#store = pd.read_hdf(h5_out)
 
-print(store)
+#print(store)
 
-if config["output_data"]["write_to_excel"] == True:
-  with pd.ExcelWriter(excel_out) as writer:
-      store.to_excel(writer)
+#if config["output_data"]["write_to_excel"] == True:
+  #with pd.ExcelWriter(excel_out) as writer:
+      #store.to_excel(writer)
