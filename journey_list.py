@@ -134,7 +134,7 @@ locations = create_locations_list(locations_df)
 res_departure_id = ['Brittania Food Stores', 'Sweetland Associates Ltd', 'Community House', 'Radcraft Newport', 
                 'Bus Stop (Highcroft Road Top)', 'Baneswell Housing Association', 'Friars Walk 1', 'Purnells2']
 #changeable based on how many departure IDs we want to run, fewer means fewer API requests
-res_departure_id = res_departure_id[0:2]
+#res_departure_id = res_departure_id[0:2]
 
 #Create a list of dictionaries using depature IDs as the key and coorodinates as the value
 #Dictionary should look like this: [{'id': 'Location 1', 'coords'{"lat":5.00, "lng":0.200}}...]
@@ -240,41 +240,47 @@ def get_results_from_api(departure_location, locs):
 
     return final_df
 
+#variable to say whether we are selecting residenital departure locations or not
 choose_dep_loc = True
 
+#run call_api with added loop to iterate through multiple departure locations, or first location on list of no departure locations are selected
 if config["api_call_variables"]["call_api"] == True:
   #for loop to iterate through departure locations
+    api_df_lst = []
     for res_dep_dict in residential_dep_locs:
       # if statement to say what to do if we are selecting departure locations or not
       if choose_dep_loc:
       #choose_dep_loc = True so we select departure locs from residential_dep_locs
         departure_location = res_dep_dict["id"]
-
-        api_output_df = get_results_from_api(departure_location, locs=locations)
       #otherwise select depature location as first in locations list
       else:
-        departure_location = locs[0]["id"]
-        api_output_df = get_results_from_api(departure_location, locs=locations)
+        departure_location = locations[0]["id"]
+      api_output_df = get_results_from_api(departure_location, locs=locations)
+      # appending the api_output_df into a list
+      api_df_lst.append(api_output_df)
+    final_dep_df = pd.concat(api_df_lst)
+
+if config["output_data"]["store_h5"] == True:
+
+  store = pd.HDFStore(h5_out)
+  try:
+    store.append("results", api_output_df, append=True)
+  except NameError as e:
+    print(f"The dataframe does not exist : {e}")
+
+  store.close()
+
+  store.is_open
+
+store = pd.read_hdf(h5_out)
+
+print(store)
+
+if config["output_data"]["write_to_excel"] == True:
+  with pd.ExcelWriter(excel_out) as writer:
+      store.to_excel(writer)
+     
+     
     
 print(api_output_df)
 
-
-#if config["output_data"]["store_h5"] == True:
-
-  #store = pd.HDFStore(h5_out)
-  #try:
-    #store.append("results", api_output_df, append=True)
-  #except NameError as e:
-    #print(f"The dataframe does not exist : {e}")
-
-  #store.close()
-
-  #store.is_open
-
-#store = pd.read_hdf(h5_out)
-
-#print(store)
-
-#if config["output_data"]["write_to_excel"] == True:
-  #with pd.ExcelWriter(excel_out) as writer:
-      #store.to_excel(writer)
